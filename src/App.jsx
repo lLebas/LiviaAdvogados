@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import Modal from "./Modal";
 import DOMPurify from "dompurify";
 import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
 import { saveAs } from "file-saver";
@@ -514,11 +515,13 @@ const ProposalDocument = ({ theme, options, services }) => {
 };
 
 export default function App() {
+  // Modal state
+  const [modal, setModal] = useState({ open: false, title: '', message: '', onConfirm: null, onCancel: null, confirmText: 'OK', cancelText: 'Cancelar', type: 'info' });
   const [theme, setTheme] = useState("light");
   const [options, setOptions] = useState({ municipio: "Jaicós - PI", data: "07 de outubro de 2025" });
   const [services, setServices] = useState(
     Object.keys(allServices).reduce((acc, key) => {
-      acc[key] = true; // começa com todos ligados
+      acc[key] = false; // começa com todos desmarcados
       return acc;
     }, {})
   );
@@ -534,15 +537,25 @@ export default function App() {
 
   // Começar do zero - reseta tudo
   const startFromScratch = () => {
-    if (confirm('Deseja começar uma nova proposta do zero? Todos os dados não salvos serão perdidos.')) {
-      setOptions({ municipio: "", data: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) });
-      setServices(
-        Object.keys(allServices).reduce((acc, key) => {
-          acc[key] = true;
-          return acc;
-        }, {})
-      );
-    }
+    setModal({
+      open: true,
+      title: 'Nova Proposta',
+      message: 'Deseja começar uma nova proposta do zero? Todos os dados não salvos serão perdidos.',
+      confirmText: 'Começar',
+      cancelText: 'Cancelar',
+      type: 'warning',
+      onConfirm: () => {
+        setOptions({ municipio: "", data: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) });
+        setServices(
+          Object.keys(allServices).reduce((acc, key) => {
+            acc[key] = true;
+            return acc;
+          }, {})
+        );
+        setModal(m => ({ ...m, open: false }));
+      },
+      onCancel: () => setModal(m => ({ ...m, open: false })),
+    });
   };
 
   // Importar documento .docx e preencher campos automaticamente
@@ -574,10 +587,24 @@ export default function App() {
       });
       setServices(newServices);
 
-      alert('Documento importado com sucesso! Os campos foram preenchidos automaticamente.');
+      setModal({
+        open: true,
+        title: 'Importação concluída',
+        message: 'Documento importado com sucesso! Os campos foram preenchidos automaticamente.',
+        confirmText: 'OK',
+        type: 'success',
+        onConfirm: () => setModal(m => ({ ...m, open: false })),
+      });
     } catch (err) {
       console.error("Erro ao importar .docx:", err);
-      alert('Erro ao importar documento. Verifique se o arquivo é válido.');
+      setModal({
+        open: true,
+        title: 'Erro ao importar',
+        message: 'Erro ao importar documento. Verifique se o arquivo é válido.',
+        confirmText: 'OK',
+        type: 'error',
+        onConfirm: () => setModal(m => ({ ...m, open: false })),
+      });
     }
   };
 
@@ -597,7 +624,14 @@ export default function App() {
     const updated = [...savedProposals, newProposal];
     setSavedProposals(updated);
     localStorage.setItem('savedProposals', JSON.stringify(updated));
-    alert(`Proposta para ${options.municipio} salva com sucesso!`);
+    setModal({
+      open: true,
+      title: 'Proposta Salva',
+      message: `Proposta para ${options.municipio} salva com sucesso!`,
+      confirmText: 'OK',
+      type: 'success',
+      onConfirm: () => setModal(m => ({ ...m, open: false })),
+    });
   };
 
   // Carregar proposta salva
@@ -608,11 +642,21 @@ export default function App() {
 
   // Excluir proposta salva
   const deleteProposal = (id) => {
-    if (confirm('Tem certeza que deseja excluir esta proposta?')) {
-      const updated = savedProposals.filter(p => p.id !== id);
-      setSavedProposals(updated);
-      localStorage.setItem('savedProposals', JSON.stringify(updated));
-    }
+    setModal({
+      open: true,
+      title: 'Excluir Proposta',
+      message: 'Tem certeza que deseja excluir esta proposta?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      type: 'warning',
+      onConfirm: () => {
+        const updated = savedProposals.filter(p => p.id !== id);
+        setSavedProposals(updated);
+        localStorage.setItem('savedProposals', JSON.stringify(updated));
+        setModal(m => ({ ...m, open: false }));
+      },
+      onCancel: () => setModal(m => ({ ...m, open: false })),
+    });
   };
 
   // Gera HTML para copiar
@@ -714,7 +758,6 @@ export default function App() {
   return (
     <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
       <Header theme={theme} toggleTheme={toggleTheme} />
-
       <main className="main">
         <ControlsSidebar
           theme={theme}
@@ -732,6 +775,7 @@ export default function App() {
           <ProposalDocument theme={theme} options={options} services={services} />
           <CopyButton theme={theme} textToCopy={proposalHtmlForCopy} />
         </div>
+        <Modal {...modal} />
       </main>
     </div>
   );
