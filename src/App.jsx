@@ -4,30 +4,39 @@ import { saveAs } from "file-saver";
 import mammoth from "mammoth";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 
+// Paleta baseada nas imagens enviadas
 const colors = {
   light: {
-    background: "#ffffff",
-    headline: "#0b2545",
-    paragraph: "#1f2d4a",
-    button: "#f582ae",
-    buttonText: "#ffffff",
-    stroke: "#e6e6e6",
+    background: "#eff0f3",     // Background (light image)
+    headline: "#0d0d0d",      // Headline / strong text
+    paragraph: "#2a2a2a",     // Paragraph / body text
+    button: "#ff8e3c",        // Button (sun color)
+    buttonText: "#0d0d0d",
+    stroke: "#0d0d0d",
+    main: "#eff0f3",
+    highlight: "#ff8e3c",
+    secondary: "#ffffff",
+    tertiary: "#d9376e",
     docBg: "#ffffff",
     docText: "#000000",
     sidebarBg: "#ffffff",
-    sidebarBorder: "#e6e6e6",
+    sidebarBorder: "#0d0d0d",
   },
   dark: {
-    background: "#0b2545",
-    headline: "#fef6e4",
-    paragraph: "#fef6e4",
-    button: "#f582ae",
-    buttonText: "#0b2545",
-    stroke: "#1f2d4a",
-    docBg: "#1e293b",
-    docText: "#fef6e4",
-    sidebarBg: "#071133",
-    sidebarBorder: "#102040",
+    background: "#0f0e17",    // Background (dark image)
+    headline: "#ffffff",
+    paragraph: "#a7a9be",
+    button: "#ff8906",
+    buttonText: "#ffffff",
+    stroke: "#000000",
+    main: "#ffffff",
+    highlight: "#ff8906",
+    secondary: "#f25f4c",
+    tertiary: "#e53170",
+    docBg: "#0f0e17",
+    docText: "#ffffff",
+    sidebarBg: "#0f0e17",
+    sidebarBorder: "#000000",
   },
 };
 

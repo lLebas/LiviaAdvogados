@@ -484,30 +484,39 @@ var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.sign
 ;
 ;
 ;
+// Paleta baseada nas imagens enviadas
 const colors = {
     light: {
-        background: "#ffffff",
-        headline: "#0b2545",
-        paragraph: "#1f2d4a",
-        button: "#f582ae",
-        buttonText: "#ffffff",
-        stroke: "#e6e6e6",
+        background: "#eff0f3",
+        headline: "#0d0d0d",
+        paragraph: "#2a2a2a",
+        button: "#ff8e3c",
+        buttonText: "#0d0d0d",
+        stroke: "#0d0d0d",
+        main: "#eff0f3",
+        highlight: "#ff8e3c",
+        secondary: "#ffffff",
+        tertiary: "#d9376e",
         docBg: "#ffffff",
         docText: "#000000",
         sidebarBg: "#ffffff",
-        sidebarBorder: "#e6e6e6"
+        sidebarBorder: "#0d0d0d"
     },
     dark: {
-        background: "#0b2545",
-        headline: "#fef6e4",
-        paragraph: "#fef6e4",
-        button: "#f582ae",
-        buttonText: "#0b2545",
-        stroke: "#1f2d4a",
-        docBg: "#1e293b",
-        docText: "#fef6e4",
-        sidebarBg: "#071133",
-        sidebarBorder: "#102040"
+        background: "#0f0e17",
+        headline: "#ffffff",
+        paragraph: "#a7a9be",
+        button: "#ff8906",
+        buttonText: "#ffffff",
+        stroke: "#000000",
+        main: "#ffffff",
+        highlight: "#ff8906",
+        secondary: "#f25f4c",
+        tertiary: "#e53170",
+        docBg: "#0f0e17",
+        docText: "#ffffff",
+        sidebarBg: "#0f0e17",
+        sidebarBorder: "#000000"
     }
 };
 // --- Lista completa de serviços (mantida no topo) ---
@@ -539,20 +548,20 @@ function Header({ theme, toggleTheme }) {
                         size: 28
                     }, void 0, false, {
                         fileName: "[project]/pages/index.js",
-                        lineNumber: 56,
+                        lineNumber: 65,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                         children: "Gerador de Propostas"
                     }, void 0, false, {
                         fileName: "[project]/pages/index.js",
-                        lineNumber: 57,
+                        lineNumber: 66,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 55,
+                lineNumber: 64,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -563,24 +572,24 @@ function Header({ theme, toggleTheme }) {
                     size: 18
                 }, void 0, false, {
                     fileName: "[project]/pages/index.js",
-                    lineNumber: 60,
+                    lineNumber: 69,
                     columnNumber: 30
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sun$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Sun$3e$__["Sun"], {
                     size: 18
                 }, void 0, false, {
                     fileName: "[project]/pages/index.js",
-                    lineNumber: 60,
+                    lineNumber: 69,
                     columnNumber: 51
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 59,
+                lineNumber: 68,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/pages/index.js",
-        lineNumber: 54,
+        lineNumber: 63,
         columnNumber: 5
     }, this);
 }
@@ -613,7 +622,7 @@ function CopyButton({ textToCopy }) {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clipboard$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Clipboard$3e$__["Clipboard"], {}, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 88,
+                lineNumber: 97,
                 columnNumber: 7
             }, this),
             " ",
@@ -621,12 +630,146 @@ function CopyButton({ textToCopy }) {
         ]
     }, void 0, true, {
         fileName: "[project]/pages/index.js",
-        lineNumber: 87,
+        lineNumber: 96,
         columnNumber: 5
     }, this);
 }
 _s(CopyButton, "NE86rL3vg4NVcTTWDavsT0hUBJs=");
 _c1 = CopyButton;
+// --- Componente: Modal simples ---
+function Modal({ open, title, description, onCancel, onConfirm, confirmLabel = 'Confirmar', cancelLabel = 'Cancelar', theme = 'light' }) {
+    if (!open) return null;
+    const themeColors = colors[theme] || colors.light;
+    const bg = theme === 'light' ? 'rgba(2,6,23,0.06)' : 'rgba(2,6,23,0.7)';
+    const modalBg = theme === 'light' ? '#fff' : '#0b0b12';
+    const textColor = themeColors.headline;
+    const descColor = theme === 'light' ? '#334155' : themeColors.paragraph;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "modal-backdrop",
+        style: {
+            position: 'fixed',
+            inset: 0,
+            background: bg,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 60
+        },
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "modal",
+            style: {
+                background: modalBg,
+                color: textColor,
+                padding: 20,
+                borderRadius: 10,
+                width: 420,
+                boxShadow: '0 8px 24px rgba(2,6,23,0.4)'
+            },
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                    style: {
+                        margin: 0,
+                        marginBottom: 8
+                    },
+                    children: title
+                }, void 0, false, {
+                    fileName: "[project]/pages/index.js",
+                    lineNumber: 113,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        marginTop: 0,
+                        marginBottom: 18,
+                        color: descColor
+                    },
+                    children: description
+                }, void 0, false, {
+                    fileName: "[project]/pages/index.js",
+                    lineNumber: 114,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    style: {
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        gap: 8
+                    },
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            className: "btn",
+                            onClick: onCancel,
+                            children: cancelLabel
+                        }, void 0, false, {
+                            fileName: "[project]/pages/index.js",
+                            lineNumber: 116,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            className: "btn danger",
+                            onClick: onConfirm,
+                            style: {
+                                background: themeColors.highlight,
+                                color: themeColors.buttonText
+                            },
+                            children: confirmLabel
+                        }, void 0, false, {
+                            fileName: "[project]/pages/index.js",
+                            lineNumber: 117,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/pages/index.js",
+                    lineNumber: 115,
+                    columnNumber: 9
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/pages/index.js",
+            lineNumber: 112,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/pages/index.js",
+        lineNumber: 111,
+        columnNumber: 5
+    }, this);
+}
+_c2 = Modal;
+// --- Componente: Toast simples ---
+function Toast({ toast, theme = 'light' }) {
+    if (!toast) return null;
+    const themeColors = colors[theme] || colors.light;
+    const bg = toast.type === 'success' ? '#16a34a' : toast.type === 'error' ? '#dc2626' : themeColors.highlight;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        style: {
+            position: 'fixed',
+            right: 20,
+            top: 20,
+            zIndex: 70
+        },
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            style: {
+                background: bg,
+                color: '#fff',
+                padding: '10px 14px',
+                borderRadius: 8,
+                boxShadow: '0 6px 18px rgba(2,6,23,0.3)'
+            },
+            children: toast.message
+        }, void 0, false, {
+            fileName: "[project]/pages/index.js",
+            lineNumber: 131,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/pages/index.js",
+        lineNumber: 130,
+        columnNumber: 5
+    }, this);
+}
+_c3 = Toast;
 function Home() {
     _s1();
     const [theme, setTheme] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("light");
@@ -655,6 +798,14 @@ function Home() {
         services,
         theme
     ]);
+    // UI state para modal e toast
+    const [toast, setToast] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [confirmState, setConfirmState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])({
+        open: false,
+        id: null,
+        title: '',
+        description: ''
+    });
     const handleOptionChange = (e)=>{
         const { name, value } = e.target;
         setOptions((prev)=>({
@@ -746,20 +897,50 @@ function Home() {
         }
     };
     const handleDeleteProposal = async (id)=>{
-        if (!confirm('Deseja realmente apagar esta proposta? Esta ação não pode ser desfeita.')) return;
+        // abrir modal de confirmação
+        setConfirmState({
+            open: true,
+            id,
+            title: 'Excluir Proposta',
+            description: 'Deseja realmente apagar esta proposta? Esta ação não pode ser desfeita.'
+        });
+    };
+    const doDeleteConfirmed = async ()=>{
+        const id = confirmState.id;
+        if (!id) return;
         try {
             const res = await fetch(`/api/propostas/${id}`, {
                 method: 'DELETE'
             });
             if (res.status === 204 || res.ok) {
                 setSavedList((prev)=>prev.filter((p)=>p.id !== id));
-                return;
+                setToast({
+                    type: 'success',
+                    message: 'Proposta excluída'
+                });
+                setTimeout(()=>setToast(null), 3000);
+            } else {
+                const json = await res.json().catch(()=>({}));
+                setToast({
+                    type: 'error',
+                    message: 'Falha ao deletar: ' + (json.error || res.statusText)
+                });
+                setTimeout(()=>setToast(null), 4000);
             }
-            const json = await res.json().catch(()=>({}));
-            alert('Falha ao deletar: ' + (json.error || res.statusText));
         } catch (e) {
             console.error(e);
-            alert('Erro ao conectar-se ao servidor');
+            setToast({
+                type: 'error',
+                message: 'Erro ao conectar-se ao servidor'
+            });
+            setTimeout(()=>setToast(null), 4000);
+        } finally{
+            setConfirmState({
+                open: false,
+                id: null,
+                title: '',
+                description: ''
+            });
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -773,12 +954,12 @@ function Home() {
                     children: "Gerador de Propostas - Livia Advogados"
                 }, void 0, false, {
                     fileName: "[project]/pages/index.js",
-                    lineNumber: 203,
+                    lineNumber: 264,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 202,
+                lineNumber: 263,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Header, {
@@ -786,7 +967,7 @@ function Home() {
                 toggleTheme: toggleTheme
             }, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 206,
+                lineNumber: 267,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -800,20 +981,20 @@ function Home() {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__["Settings"], {}, void 0, false, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 211,
+                                        lineNumber: 272,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                         children: "Personalizar Proposta"
                                     }, void 0, false, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 212,
+                                        lineNumber: 273,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 210,
+                                lineNumber: 271,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -823,7 +1004,7 @@ function Home() {
                                         children: "Município Destinatário"
                                     }, void 0, false, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 216,
+                                        lineNumber: 277,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -832,13 +1013,13 @@ function Home() {
                                         onChange: handleOptionChange
                                     }, void 0, false, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 217,
+                                        lineNumber: 278,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 215,
+                                lineNumber: 276,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -848,7 +1029,7 @@ function Home() {
                                         children: "Data da Proposta"
                                     }, void 0, false, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 221,
+                                        lineNumber: 282,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -857,25 +1038,25 @@ function Home() {
                                         onChange: handleOptionChange
                                     }, void 0, false, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 222,
+                                        lineNumber: 283,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 220,
+                                lineNumber: 281,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("hr", {}, void 0, false, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 225,
+                                lineNumber: 286,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                 children: "Serviços (Seções)"
                             }, void 0, false, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 227,
+                                lineNumber: 288,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -890,20 +1071,20 @@ function Home() {
                                                     onChange: ()=>handleServiceToggle(key)
                                                 }, void 0, false, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 231,
+                                                    lineNumber: 292,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: label
                                                 }, void 0, false, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 232,
+                                                    lineNumber: 293,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, key, true, {
                                             fileName: "[project]/pages/index.js",
-                                            lineNumber: 230,
+                                            lineNumber: 291,
                                             columnNumber: 15
                                         }, this)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -930,13 +1111,13 @@ function Home() {
                                                         }
                                                     }, void 0, false, {
                                                         fileName: "[project]/pages/index.js",
-                                                        lineNumber: 239,
+                                                        lineNumber: 300,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/pages/index.js",
-                                                lineNumber: 237,
+                                                lineNumber: 298,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -948,19 +1129,19 @@ function Home() {
                                                 children: "Salvar Proposta"
                                             }, void 0, false, {
                                                 fileName: "[project]/pages/index.js",
-                                                lineNumber: 250,
+                                                lineNumber: 311,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 236,
+                                        lineNumber: 297,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 228,
+                                lineNumber: 289,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("hr", {
@@ -969,7 +1150,7 @@ function Home() {
                                 }
                             }, void 0, false, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 256,
+                                lineNumber: 317,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -979,7 +1160,7 @@ function Home() {
                                 children: "Propostas Salvas"
                             }, void 0, false, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 257,
+                                lineNumber: 318,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -996,7 +1177,7 @@ function Home() {
                                         children: "Nenhuma proposta salva"
                                     }, void 0, false, {
                                         fileName: "[project]/pages/index.js",
-                                        lineNumber: 259,
+                                        lineNumber: 320,
                                         columnNumber: 40
                                     }, this),
                                     savedList.map((s)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1018,7 +1199,7 @@ function Home() {
                                                             children: s.municipio
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 272,
+                                                            lineNumber: 333,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1029,13 +1210,13 @@ function Home() {
                                                             children: new Date(s.createdAt).toLocaleString()
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 273,
+                                                            lineNumber: 334,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 271,
+                                                    lineNumber: 332,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1050,7 +1231,7 @@ function Home() {
                                                             children: "Carregar"
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 278,
+                                                            lineNumber: 339,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1059,31 +1240,31 @@ function Home() {
                                                             children: "Excluir"
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 281,
+                                                            lineNumber: 342,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 277,
+                                                    lineNumber: 338,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, s.id, true, {
                                             fileName: "[project]/pages/index.js",
-                                            lineNumber: 261,
+                                            lineNumber: 322,
                                             columnNumber: 15
                                         }, this))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 258,
+                                lineNumber: 319,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/pages/index.js",
-                        lineNumber: 209,
+                        lineNumber: 270,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1104,7 +1285,7 @@ function Home() {
                                                         size: 32
                                                     }, void 0, false, {
                                                         fileName: "[project]/pages/index.js",
-                                                        lineNumber: 295,
+                                                        lineNumber: 356,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1113,7 +1294,7 @@ function Home() {
                                                                 children: "CAVALCANTE REIS"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/pages/index.js",
-                                                                lineNumber: 297,
+                                                                lineNumber: 358,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1121,24 +1302,24 @@ function Home() {
                                                                 children: "advogados"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/pages/index.js",
-                                                                lineNumber: 298,
+                                                                lineNumber: 359,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/pages/index.js",
-                                                        lineNumber: 296,
+                                                        lineNumber: 357,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/pages/index.js",
-                                                lineNumber: 294,
+                                                lineNumber: 355,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/pages/index.js",
-                                            lineNumber: 293,
+                                            lineNumber: 354,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1150,14 +1331,14 @@ function Home() {
                                                             children: "Proponente:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 305,
+                                                            lineNumber: 366,
                                                             columnNumber: 19
                                                         }, this),
                                                         " Cavalcante Reis Advogados"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 304,
+                                                    lineNumber: 365,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1166,7 +1347,7 @@ function Home() {
                                                             children: "Destinatário:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 308,
+                                                            lineNumber: 369,
                                                             columnNumber: 19
                                                         }, this),
                                                         " Prefeitura Municipal de ",
@@ -1174,14 +1355,14 @@ function Home() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 307,
+                                                    lineNumber: 368,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                                     children: "Sumário"
                                                 }, void 0, false, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 311,
+                                                    lineNumber: 372,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ol", {
@@ -1191,41 +1372,41 @@ function Home() {
                                                             children: "Objeto da Proposta"
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 313,
+                                                            lineNumber: 374,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                             children: "Análise da Questão"
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 314,
+                                                            lineNumber: 375,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 312,
+                                                    lineNumber: 373,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                                     children: "1. Objeto da Proposta"
                                                 }, void 0, false, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 317,
+                                                    lineNumber: 378,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                     children: "É objeto do presente contrato... (resumo)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 318,
+                                                    lineNumber: 379,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                                     children: "2. Análise da Questão"
                                                 }, void 0, false, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 320,
+                                                    lineNumber: 381,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
@@ -1238,25 +1419,25 @@ function Home() {
                                                                         children: "TESE"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/pages/index.js",
-                                                                        lineNumber: 324,
+                                                                        lineNumber: 385,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                                         children: "CABIMENTO / PERSPECTIVA"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/pages/index.js",
-                                                                        lineNumber: 325,
+                                                                        lineNumber: 386,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/pages/index.js",
-                                                                lineNumber: 323,
+                                                                lineNumber: 384,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 322,
+                                                            lineNumber: 383,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -1266,31 +1447,31 @@ function Home() {
                                                                             children: allServices[k]
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/pages/index.js",
-                                                                            lineNumber: 333,
+                                                                            lineNumber: 394,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                                             children: "Cabível"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/pages/index.js",
-                                                                            lineNumber: 334,
+                                                                            lineNumber: 395,
                                                                             columnNumber: 27
                                                                         }, this)
                                                                     ]
                                                                 }, k, true, {
                                                                     fileName: "[project]/pages/index.js",
-                                                                    lineNumber: 332,
+                                                                    lineNumber: 393,
                                                                     columnNumber: 25
                                                                 }, this))
                                                         }, void 0, false, {
                                                             fileName: "[project]/pages/index.js",
-                                                            lineNumber: 328,
+                                                            lineNumber: 389,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 321,
+                                                    lineNumber: 382,
                                                     columnNumber: 17
                                                 }, this),
                                                 Object.keys(allServices).filter((k)=>services[k]).map((k, idx)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1299,7 +1480,7 @@ function Home() {
                                                                 children: `2.${idx + 1} – ${allServices[k]}`
                                                             }, void 0, false, {
                                                                 fileName: "[project]/pages/index.js",
-                                                                lineNumber: 345,
+                                                                lineNumber: 406,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1310,13 +1491,13 @@ function Home() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/pages/index.js",
-                                                                lineNumber: 346,
+                                                                lineNumber: 407,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, k, true, {
                                                         fileName: "[project]/pages/index.js",
-                                                        lineNumber: 344,
+                                                        lineNumber: 405,
                                                         columnNumber: 21
                                                     }, this)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1328,58 +1509,86 @@ function Home() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/pages/index.js",
-                                                    lineNumber: 350,
+                                                    lineNumber: 411,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/pages/index.js",
-                                            lineNumber: 303,
+                                            lineNumber: 364,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/pages/index.js",
-                                    lineNumber: 292,
+                                    lineNumber: 353,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CopyButton, {
                                     textToCopy: proposalHtmlForCopy
                                 }, void 0, false, {
                                     fileName: "[project]/pages/index.js",
-                                    lineNumber: 354,
+                                    lineNumber: 415,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/pages/index.js",
-                            lineNumber: 291,
+                            lineNumber: 352,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/pages/index.js",
-                        lineNumber: 290,
+                        lineNumber: 351,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 208,
+                lineNumber: 269,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Modal, {
+                open: confirmState.open,
+                title: confirmState.title,
+                description: confirmState.description,
+                theme: theme,
+                onCancel: ()=>setConfirmState({
+                        open: false,
+                        id: null,
+                        title: '',
+                        description: ''
+                    }),
+                onConfirm: doDeleteConfirmed,
+                confirmLabel: "Excluir"
+            }, void 0, false, {
+                fileName: "[project]/pages/index.js",
+                lineNumber: 421,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Toast, {
+                toast: toast,
+                theme: theme
+            }, void 0, false, {
+                fileName: "[project]/pages/index.js",
+                lineNumber: 430,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/pages/index.js",
-        lineNumber: 201,
+        lineNumber: 262,
         columnNumber: 5
     }, this);
 }
-_s1(Home, "sH2vwEa7bBX4iWq6iLyCY387oX8=");
-_c2 = Home;
-var _c, _c1, _c2;
+_s1(Home, "bH1nFIOWu6V+SW10h73DoS23XR4=");
+_c4 = Home;
+var _c, _c1, _c2, _c3, _c4;
 __turbopack_context__.k.register(_c, "Header");
 __turbopack_context__.k.register(_c1, "CopyButton");
-__turbopack_context__.k.register(_c2, "Home");
+__turbopack_context__.k.register(_c2, "Modal");
+__turbopack_context__.k.register(_c3, "Toast");
+__turbopack_context__.k.register(_c4, "Home");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }

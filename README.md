@@ -53,3 +53,26 @@ Suporte ao Supabase (opcional):
 Limpeza automática:
 
 - Propostas com mais de 7 dias são removidas automaticamente (lazy cleanup) ao listar/salvar. Também existe um endpoint DELETE para exclusão manual pelo usuário.
+
+Deploy no Vercel
+-----------------
+
+- O app foi construído em Next.js e é compatível com deploys automáticos no Vercel.
+- IMPORTANTE: O fallback por arquivo (`data/proposals.json`) não é persistente em ambientes serverless (como Vercel) — arquivos gravados no filesystem podem desaparecer entre implantações/cold starts. Por isso é fortemente recomendado configurar Supabase (ou outro banco gerenciado) para produção.
+
+Passos rápidos:
+
+1. Crie uma conta em https://vercel.com e conecte o repositório Git.
+2. Em Settings > Environment Variables adicione as chaves (se usar Supabase):
+
+	NEXT_PUBLIC_SUPABASE_URL
+	NEXT_PUBLIC_SUPABASE_ANON_KEY
+	SUPABASE_SERVICE_ROLE_KEY
+
+3. Defina a Branch a ser implantada (por exemplo `main` ou `Feactue-Edições`).
+4. Deploy será automático ao pushar commits.
+
+Observações:
+
+- Se não configurar Supabase, o app ainda irá funcionar, mas os dados salvos podem não persistir entre deploys.
+- Para testes locais, use `.env.local` com as mesmas variáveis.

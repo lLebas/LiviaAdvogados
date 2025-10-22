@@ -3,30 +3,39 @@ import Head from "next/head";
 import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
 import { saveAs } from "file-saver";
 
+// Paleta baseada nas imagens enviadas
 const colors = {
   light: {
-    background: "#ffffff",
-    headline: "#0b2545",
-    paragraph: "#1f2d4a",
-    button: "#f582ae",
-    buttonText: "#ffffff",
-    stroke: "#e6e6e6",
+    background: "#eff0f3",     // Background (light image)
+    headline: "#0d0d0d",      // Headline / strong text
+    paragraph: "#2a2a2a",     // Paragraph / body text
+    button: "#ff8e3c",        // Button (sun color)
+    buttonText: "#0d0d0d",
+    stroke: "#0d0d0d",
+    main: "#eff0f3",
+    highlight: "#ff8e3c",
+    secondary: "#ffffff",
+    tertiary: "#d9376e",
     docBg: "#ffffff",
     docText: "#000000",
     sidebarBg: "#ffffff",
-    sidebarBorder: "#e6e6e6",
+    sidebarBorder: "#0d0d0d",
   },
   dark: {
-    background: "#0b2545",
-    headline: "#fef6e4",
-    paragraph: "#fef6e4",
-    button: "#f582ae",
-    buttonText: "#0b2545",
-    stroke: "#1f2d4a",
-    docBg: "#1e293b",
-    docText: "#fef6e4",
-    sidebarBg: "#071133",
-    sidebarBorder: "#102040",
+    background: "#0f0e17",    // Background (dark image)
+    headline: "#ffffff",
+    paragraph: "#a7a9be",
+    button: "#ff8906",
+    buttonText: "#ffffff",
+    stroke: "#000000",
+    main: "#ffffff",
+    highlight: "#ff8906",
+    secondary: "#f25f4c",
+    tertiary: "#e53170",
+    docBg: "#0f0e17",
+    docText: "#ffffff",
+    sidebarBg: "#0f0e17",
+    sidebarBorder: "#000000",
   },
 };
 
@@ -90,6 +99,42 @@ function CopyButton({ textToCopy }) {
   );
 }
 
+// --- Componente: Modal simples ---
+function Modal({ open, title, description, onCancel, onConfirm, confirmLabel = 'Confirmar', cancelLabel = 'Cancelar', theme = 'light' }) {
+  if (!open) return null;
+  const themeColors = colors[theme] || colors.light;
+  const bg = theme === 'light' ? 'rgba(2,6,23,0.06)' : 'rgba(2,6,23,0.7)';
+  const modalBg = theme === 'light' ? '#fff' : '#0b0b12';
+  const textColor = themeColors.headline;
+  const descColor = theme === 'light' ? '#334155' : themeColors.paragraph;
+  return (
+    <div className="modal-backdrop" style={{ position: 'fixed', inset: 0, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60 }}>
+      <div className="modal" style={{ background: modalBg, color: textColor, padding: 20, borderRadius: 10, width: 420, boxShadow: '0 8px 24px rgba(2,6,23,0.4)' }}>
+        <h3 style={{ margin: 0, marginBottom: 8 }}>{title}</h3>
+        <p style={{ marginTop: 0, marginBottom: 18, color: descColor }}>{description}</p>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+          <button className="btn" onClick={onCancel}>{cancelLabel}</button>
+          <button className="btn danger" onClick={onConfirm} style={{ background: themeColors.highlight, color: themeColors.buttonText }}>{confirmLabel}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- Componente: Toast simples ---
+function Toast({ toast, theme = 'light' }) {
+  if (!toast) return null;
+  const themeColors = colors[theme] || colors.light;
+  const bg = toast.type === 'success' ? '#16a34a' : toast.type === 'error' ? '#dc2626' : themeColors.highlight;
+  return (
+    <div style={{ position: 'fixed', right: 20, top: 20, zIndex: 70 }}>
+      <div style={{ background: bg, color: '#fff', padding: '10px 14px', borderRadius: 8, boxShadow: '0 6px 18px rgba(2,6,23,0.3)' }}>
+        {toast.message}
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [theme, setTheme] = useState("light");
   const [options, setOptions] = useState({ municipio: "Jaicós - PI", data: "07 de outubro de 2025" });
@@ -108,6 +153,10 @@ export default function Home() {
     const el = typeof window !== "undefined" ? document.getElementById("preview") : null;
     setProposalHtmlForCopy(el ? el.innerHTML : "");
   }, [options, services, theme]);
+
+  // UI state para modal e toast
+  const [toast, setToast] = useState(null);
+  const [confirmState, setConfirmState] = useState({ open: false, id: null, title: '', description: '' });
 
   const handleOptionChange = (e) => {
     const { name, value } = e.target;
@@ -182,18 +231,30 @@ export default function Home() {
   };
 
   const handleDeleteProposal = async (id) => {
-    if (!confirm('Deseja realmente apagar esta proposta? Esta ação não pode ser desfeita.')) return;
+    // abrir modal de confirmação
+    setConfirmState({ open: true, id, title: 'Excluir Proposta', description: 'Deseja realmente apagar esta proposta? Esta ação não pode ser desfeita.' });
+  }
+
+  const doDeleteConfirmed = async () => {
+    const id = confirmState.id;
+    if (!id) return;
     try {
       const res = await fetch(`/api/propostas/${id}`, { method: 'DELETE' });
       if (res.status === 204 || res.ok) {
         setSavedList((prev) => prev.filter(p => p.id !== id));
-        return;
+        setToast({ type: 'success', message: 'Proposta excluída' });
+        setTimeout(() => setToast(null), 3000);
+      } else {
+        const json = await res.json().catch(()=>({}));
+        setToast({ type: 'error', message: 'Falha ao deletar: ' + (json.error || res.statusText) });
+        setTimeout(() => setToast(null), 4000);
       }
-      const json = await res.json().catch(()=>({}));
-      alert('Falha ao deletar: ' + (json.error || res.statusText));
     } catch (e) {
       console.error(e);
-      alert('Erro ao conectar-se ao servidor');
+      setToast({ type: 'error', message: 'Erro ao conectar-se ao servidor' });
+      setTimeout(() => setToast(null), 4000);
+    } finally {
+      setConfirmState({ open: false, id: null, title: '', description: '' });
     }
   }
 
@@ -355,6 +416,18 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Modal e Toast global */}
+      <Modal
+        open={confirmState.open}
+        title={confirmState.title}
+        description={confirmState.description}
+        theme={theme}
+        onCancel={() => setConfirmState({ open: false, id: null, title: '', description: '' })}
+        onConfirm={doDeleteConfirmed}
+        confirmLabel="Excluir"
+      />
+      <Toast toast={toast} theme={theme} />
     </div>
   );
 }

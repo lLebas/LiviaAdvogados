@@ -1,2 +1,16 @@
-[00:00:10.448] Server  LOG      ✓ Ready in 6.3s
-[00:00:35.249] Server  LOG      ○ Compiling / ...
+[00:00:14.694] Server  LOG      ✓ Ready in 9.3s
+[00:00:18.611] Server  LOG      ○ Compiling / ...
+[00:13:44.675] Server  WARN    API handler should not return a value, received object.
+[00:14:59.708] Server  WARN    API handler should not return a value, received object.
+[00:15:24.208] Server  WARN    API handler should not return a value, received object.
+[00:16:02.221] Server  LOG      ✓ Compiled in 656ms
+[00:16:02.437] Browser LOG     Refreshing page data due to server-side change
+[00:16:09.207] Server  LOG      ✓ Compiled in 107ms
+[00:16:09.442] Browser LOG     Refreshing page data due to server-side change
+[00:20:28.220] Server  LOG      ✓ Compiled in 460ms
+[00:20:49.113] Server  LOG      ✓ Compiled in 62ms
+[00:20:57.519] Server  LOG      ✓ Compiled in 71ms
+[00:22:41.525] Server  WARN    API handler should not return a value, received object.
+[01:37:45.467] Server  WARN    API handler should not return a value, received object.
+[01:37:47.101] Server  WARN    API handler should not return a value, received object.
+[01:41:09.780] Server  WARN    API handler should not return a value, received object.
