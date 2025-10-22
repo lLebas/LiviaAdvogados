@@ -1,8 +1,2 @@
-[00:00:09.727] Server  LOG      ✓ Ready in 6.4s
-[00:00:12.801] Server  LOG      ○ Compiling / ...
-[00:01:35.673] Server  WARN    API resolved without sending a response for /api/process-docx, this may result in stalled requests.
-[00:01:35.922] Server  ERROR   Processing error TypeError: Cannot read properties of undefined (reading 'creator')
-[00:02:04.303] Server  WARN    API resolved without sending a response for /api/process-docx, this may result in stalled requests.
-[00:02:04.391] Server  ERROR   Processing error TypeError: Cannot read properties of undefined (reading 'creator')
-[00:04:46.059] Server  LOG      ✓ Compiled in 116ms
-[00:05:33.803] Server  LOG      ✓ Compiled in 32ms
+[00:00:10.448] Server  LOG      ✓ Ready in 6.3s
+[00:00:35.249] Server  LOG      ○ Compiling / ...

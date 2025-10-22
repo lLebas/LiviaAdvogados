@@ -181,6 +181,22 @@ export default function Home() {
     }
   };
 
+  const handleDeleteProposal = async (id) => {
+    if (!confirm('Deseja realmente apagar esta proposta? Esta ação não pode ser desfeita.')) return;
+    try {
+      const res = await fetch(`/api/propostas/${id}`, { method: 'DELETE' });
+      if (res.status === 204 || res.ok) {
+        setSavedList((prev) => prev.filter(p => p.id !== id));
+        return;
+      }
+      const json = await res.json().catch(()=>({}));
+      alert('Falha ao deletar: ' + (json.error || res.statusText));
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao conectar-se ao servidor');
+    }
+  }
+
   return (
     <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
       <Head>
@@ -258,9 +274,12 @@ export default function Home() {
                     {new Date(s.createdAt).toLocaleString()}
                   </div>
                 </div>
-                <div>
+                <div style={{ display: 'flex', gap: 8 }}>
                   <button className="btn" onClick={() => handleLoadProposal(s.id)}>
                     Carregar
+                  </button>
+                  <button className="btn danger" onClick={() => handleDeleteProposal(s.id)}>
+                    Excluir
                   </button>
                 </div>
               </div>
