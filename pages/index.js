@@ -1,0 +1,307 @@
+import React, { useState, useMemo, useEffect } from "react";
+import Head from "next/head";
+import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+import { saveAs } from "file-saver";
+
+const colors = {
+  light: {
+    background: "#ffffff",
+    headline: "#0b2545",
+    paragraph: "#1f2d4a",
+    button: "#f582ae",
+    buttonText: "#ffffff",
+    stroke: "#e6e6e6",
+    docBg: "#ffffff",
+    docText: "#000000",
+    sidebarBg: "#ffffff",
+    sidebarBorder: "#e6e6e6",
+  },
+  dark: {
+    background: "#0b2545",
+    headline: "#fef6e4",
+    paragraph: "#fef6e4",
+    button: "#f582ae",
+    buttonText: "#0b2545",
+    stroke: "#1f2d4a",
+    docBg: "#1e293b",
+    docText: "#fef6e4",
+    sidebarBg: "#071133",
+    sidebarBorder: "#102040",
+  },
+};
+
+function Header({ theme, toggleTheme }) {
+  return (
+    <header className={`header ${theme}`}>
+      <div className="left">
+        <FileText size={28} />
+        <h1>Gerador de Propostas</h1>
+      </div>
+      <button onClick={toggleTheme} className="theme-btn" aria-label="Mudar tema">
+        {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+      </button>
+    </header>
+  );
+}
+
+function CopyButton({ textToCopy }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    try {
+      const textarea = document.createElement("textarea");
+      // limpa HTML simples
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = textToCopy || "";
+      const clean = tempDiv.textContent || tempDiv.innerText || "";
+      textarea.value = clean;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  return (
+    <button className={`copy-btn`} onClick={handleCopy} title="Copiar texto limpo da proposta">
+      <Clipboard /> {copied ? "Proposta Copiada!" : "Copiar Texto da Proposta"}
+    </button>
+  );
+}
+
+export default function Home() {
+  const [theme, setTheme] = useState("light");
+  const [options, setOptions] = useState({ municipio: "Jaicós - PI", data: "07 de outubro de 2025" });
+  const [services, setServices] = useState({
+    folhaPagamento: true,
+    rpps: true,
+    impostoRenda: true,
+    energiaEletrica: true,
+    fundef: true,
+    fundeb: true,
+    servicosTecnicos: true,
+  });
+
+  const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
+
+  const [proposalHtmlForCopy, setProposalHtmlForCopy] = useState("");
+  useEffect(() => {
+    const el = typeof window !== "undefined" ? document.getElementById("preview") : null;
+    setProposalHtmlForCopy(el ? el.innerHTML : "");
+  }, [options, services, theme]);
+
+  const handleOptionChange = (e) => {
+    const { name, value } = e.target;
+    setOptions((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleServiceToggle = (name) => {
+    setServices((prev) => ({ ...prev, [name]: !prev[name] }));
+  };
+
+  const handleUploadToServer = async (file) => {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("municipio", options.municipio);
+    formData.append("data", options.data);
+    // quais serviços manter
+    formData.append("services", JSON.stringify(services));
+
+    const res = await fetch("/api/process-docx", { method: "POST", body: formData });
+    if (!res.ok) {
+      alert("Erro ao processar no servidor");
+      return;
+    }
+    const blob = await res.blob();
+    saveAs(blob, `Proposta-ajustada-${options.municipio}.docx`);
+  };
+
+  return (
+    <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
+      <Head>
+        <title>Gerador de Propostas - Livia Advogados</title>
+      </Head>
+
+      <Header theme={theme} toggleTheme={toggleTheme} />
+
+      <main className="main">
+        <aside className="sidebar">
+          <div className="sidebar-header">
+            <Settings />
+            <h2>Personalizar Proposta</h2>
+          </div>
+
+          <div className="field">
+            <label>Município Destinatário</label>
+            <input name="municipio" value={options.municipio} onChange={handleOptionChange} />
+          </div>
+
+          <div className="field">
+            <label>Data da Proposta</label>
+            <input name="data" value={options.data} onChange={handleOptionChange} />
+          </div>
+
+          <hr />
+
+          <h3>Serviços (Seções)</h3>
+          <div className="services">
+            {Object.keys(services).map((key) => (
+              <label key={key} className="service-item">
+                <input type="checkbox" checked={services[key]} onChange={() => handleServiceToggle(key)} />
+                <span>
+                  {
+                    {
+                      folhaPagamento: "2.1 - Folha de Pagamento",
+                      rpps: "2.2 - RPPS",
+                      impostoRenda: "2.3 - Imposto de Renda",
+                      energiaEletrica: "2.4 - Auditoria Energia",
+                      fundef: "2.5 - Recuperação FUNDEF",
+                      fundeb: "2.6 - Recuperação FUNDEB",
+                      servicosTecnicos: "2.7 - Serviços Técnicos",
+                    }[key]
+                  }
+                </span>
+              </label>
+            ))}
+
+            <div className="actions">
+              <label className="btn upload-btn" style={{ display: "inline-block", cursor: "pointer" }}>
+                Upload .docx modelo
+                <input
+                  id="upload-docx"
+                  type="file"
+                  accept=".docx"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const f = e.target.files && e.target.files[0];
+                    if (f) handleUploadToServer(f);
+                  }}
+                />
+              </label>
+            </div>
+          </div>
+        </aside>
+
+        <div className="content">
+          <div id="preview-area">
+            <div id="preview" className="preview paper">
+              <div className="doc-header">
+                <div className="brand">
+                  <FileText size={32} />
+                  <div>
+                    <h1>CAVALCANTE REIS</h1>
+                    <p className="sub">advogados</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="doc-body">
+                <p>
+                  <strong>Proponente:</strong> Cavalcante Reis Advogados
+                </p>
+                <p>
+                  <strong>Destinatário:</strong> Prefeitura Municipal de {options.municipio}
+                </p>
+
+                <h2>Sumário</h2>
+                <ol className="summary">
+                  <li>Objeto da Proposta</li>
+                  <li>Análise da Questão</li>
+                </ol>
+
+                <h2>1. Objeto da Proposta</h2>
+                <p>É objeto do presente contrato... (resumo)</p>
+
+                <h2>2. Análise da Questão</h2>
+                <table className="obj-table">
+                  <thead>
+                    <tr>
+                      <th>TESE</th>
+                      <th>CABIMENTO / PERSPECTIVA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {services.folhaPagamento && (
+                      <tr>
+                        <td>Folha de pagamento, recuperação de verbas</td>
+                        <td>Cabível</td>
+                      </tr>
+                    )}
+                    {services.rpps && (
+                      <tr>
+                        <td>RPPS - Regime Próprio</td>
+                        <td>Cabível</td>
+                      </tr>
+                    )}
+                    {services.impostoRenda && (
+                      <tr>
+                        <td>Imposto de Renda (IRRF)</td>
+                        <td>Cabível</td>
+                      </tr>
+                    )}
+                    {services.energiaEletrica && (
+                      <tr>
+                        <td>Auditoria de Energia Elétrica</td>
+                        <td>Cabível</td>
+                      </tr>
+                    )}
+                    {services.fundef && (
+                      <tr>
+                        <td>Recuperação FUNDEF</td>
+                        <td>Cabível</td>
+                      </tr>
+                    )}
+                    {services.fundeb && (
+                      <tr>
+                        <td>Recuperação FUNDEB</td>
+                        <td>Cabível</td>
+                      </tr>
+                    )}
+                    {services.servicosTecnicos && (
+                      <tr>
+                        <td>Serviços Técnicos</td>
+                        <td>Cabível</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+
+                {services.folhaPagamento && (
+                  <>
+                    <h3>2.1 – Folha de pagamento</h3>
+                    <p>Realização de auditoria das folhas de pagamento...</p>
+                  </>
+                )}
+                {services.rpps && (
+                  <>
+                    <h3>2.2 – RPPS</h3>
+                    <p>Texto da seção 2.2...</p>
+                  </>
+                )}
+                {services.impostoRenda && (
+                  <>
+                    <h3>2.3 – IRRF</h3>
+                    <p>Texto da seção 2.3...</p>
+                  </>
+                )}
+                {services.energiaEletrica && (
+                  <>
+                    <h3>2.4 – Auditoria de Energia</h3>
+                    <p>Texto da seção 2.4...</p>
+                  </>
+                )}
+
+                <div className="signature">Brasília-DF, {options.data}.</div>
+              </div>
+            </div>
+
+            <CopyButton textToCopy={proposalHtmlForCopy} />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
