@@ -21,7 +21,13 @@ export default async function handler(req, res) {
 
     try {
       const file = files.file;
-      const buffer = fs.readFileSync(file.filepath || file.path);
+      // formidable v2 uses .filepath; older versions used .path
+      const filePath = file && (file.filepath || file.path || file[0]?.filepath || file[0]?.path)
+      if (!filePath) {
+        console.error('no uploaded file path available', { files })
+        return res.status(400).end('no file uploaded')
+      }
+      const buffer = fs.readFileSync(filePath);
       const result = await mammoth.extractRawText({ buffer });
       let text = result.value;
 
@@ -50,15 +56,31 @@ export default async function handler(req, res) {
       const cleaned = outLines.join("\n");
 
       // Gerar docx usando docx
-      const doc = new Document();
-      const paras = cleaned.split(/\n\n+/g).map((p) => new Paragraph(p));
-      doc.addSection({ children: paras });
+      // Monta parágrafos como TextRun -> Paragraph
+      const paras = cleaned.split(/\n\n+/g).map((p) =>
+        new Paragraph({ children: [new TextRun({ text: p })] })
+      );
+
+      // Criar documento com metadados para evitar erros internos
+      const doc = new Document({
+        creator: "CAVALCANTE REIS",
+        title: "Proposta",
+        description: "Proposta gerada",
+        sections: [{ children: paras }],
+      });
 
       const bufferOut = await Packer.toBuffer(doc);
-
-      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-      res.setHeader("Content-Disposition", `attachment; filename=Proposta-ajustada.docx`);
-      res.send(bufferOut);
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      );
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=Proposta-ajustada.docx`
+      );
+      res.setHeader("Content-Length", Buffer.byteLength(bufferOut).toString());
+      // Use res.end with buffer to avoid stream issues
+      return res.status(200).end(Buffer.from(bufferOut));
     } catch (err) {
       console.error("Processing error", err);
       res.status(500).end("Processing error");
