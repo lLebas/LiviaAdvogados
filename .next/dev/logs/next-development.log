@@ -1,4 +1,882 @@
-[00:00:16.788] Server  LOG      ✓ Ready in 11s
-[00:04:54.198] Server  LOG      ✓ Compiled in 52ms
-[00:05:24.669] Server  LOG      ✓ Compiled in 15ms
-[00:11:31.490] Server  LOG      ✓ Compiled in 49ms
+[00:00:18.371] Server  LOG      ✓ Ready in 11.3s
+[00:00:21.748] Server  LOG      ○ Compiling / ...
+[00:13:15.257] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.267] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.288] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.330] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.354] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.371] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.379] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.384] Server  ERROR    ⨯ ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:13:15.387] Server  LOG      ✓ Compiled in 110ms
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:16.804] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:18.025] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:18.025] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:46.993] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:46.993] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:46.993] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:46.993] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:47.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:47.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:47.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:47.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:13:47.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:18.783] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:18.783] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:20.788] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:37.784] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:37.784] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:39.785] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:54.784] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:56.780] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:14:58.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:02.784] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:04.776] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:04.776] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:15.778] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:18.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:18.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:22.790] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:22.790] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:22.790] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:25.800] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:30.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:30.779] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:32.775] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:32.775] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:33.774] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:33.774] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:35.780] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:35.780] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:37.781] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:15:37.781] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve 'file-saver'
+  2 | import Head from "next/head";
+  3 | import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+> 4 | import { saveAs } from "file-saver";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const colors = {
+  7 |   light: {
+
+https://nextjs.org/docs/messages/module-not-found
