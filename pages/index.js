@@ -119,6 +119,45 @@ export default function Home() {
     saveAs(blob, `Proposta-ajustada-${options.municipio}.docx`);
   };
 
+  // --- Propostas (Opção A: salvar em JSON no servidor)
+  const [savedList, setSavedList] = useState([])
+
+  const fetchList = async () => {
+    try {
+      const res = await fetch('/api/propostas')
+      if (res.ok) {
+        const data = await res.json()
+        setSavedList(data.reverse())
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  useEffect(() => { fetchList() }, [])
+
+  const handleSaveProposal = async () => {
+    const body = { municipio: options.municipio, data: options.data, services, html: proposalHtmlForCopy }
+    const res = await fetch('/api/propostas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    if (res.ok) {
+      const item = await res.json()
+      setSavedList(prev => [item, ...prev])
+      alert('Proposta salva com sucesso')
+    } else {
+      alert('Falha ao salvar')
+    }
+  }
+
+  const handleLoadProposal = async (id) => {
+    const res = await fetch(`/api/propostas/${id}`)
+    if (res.ok) {
+      const p = await res.json()
+      setOptions({ municipio: p.municipio || options.municipio, data: p.data || options.data })
+      setServices(p.services || services)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
     <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
       <Head>
@@ -181,7 +220,25 @@ export default function Home() {
                   }}
                 />
               </label>
+              <button className="btn primary" style={{ marginLeft: 8 }} onClick={handleSaveProposal}>Salvar Proposta</button>
             </div>
+          </div>
+
+          <hr style={{ marginTop: 18 }} />
+          <h3 style={{ marginTop: 12 }}>Propostas Salvas</h3>
+          <div style={{ maxHeight: 220, overflowY: 'auto', marginTop: 8 }}>
+            {savedList.length === 0 && <p style={{ color: 'rgba(11,37,69,0.6)' }}>Nenhuma proposta salva</p>}
+            {savedList.map(s => (
+              <div key={s.id} className="saved-item" style={{ padding: 8, borderBottom: '1px solid rgba(11,37,69,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontWeight: 700 }}>{s.municipio}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(11,37,69,0.6)' }}>{new Date(s.createdAt).toLocaleString()}</div>
+                </div>
+                <div>
+                  <button className="btn" onClick={() => handleLoadProposal(s.id)}>Carregar</button>
+                </div>
+              </div>
+            ))}
           </div>
         </aside>
 
