@@ -6,10 +6,10 @@ import { saveAs } from "file-saver";
 // Paleta baseada nas imagens enviadas
 const colors = {
   light: {
-    background: "#eff0f3",     // Background (light image)
-    headline: "#0d0d0d",      // Headline / strong text
-    paragraph: "#2a2a2a",     // Paragraph / body text
-    button: "#ff8e3c",        // Button (sun color)
+    background: "#eff0f3", // Background (light image)
+    headline: "#0d0d0d", // Headline / strong text
+    paragraph: "#2a2a2a", // Paragraph / body text
+    button: "#ff8e3c", // Button (sun color)
     buttonText: "#0d0d0d",
     stroke: "#0d0d0d",
     main: "#eff0f3",
@@ -22,7 +22,7 @@ const colors = {
     sidebarBorder: "#0d0d0d",
   },
   dark: {
-    background: "#0f0e17",    // Background (dark image)
+    background: "#0f0e17", // Background (dark image)
     headline: "#ffffff",
     paragraph: "#a7a9be",
     button: "#ff8906",
@@ -60,7 +60,7 @@ const allServices = {
 
 function Header({ theme, toggleTheme }) {
   return (
-    <header className={`header ${theme}`}>
+    <header className={`header header-prominent ${theme}`}>
       <div className="left">
         <FileText size={28} />
         <h1>Gerador de Propostas</h1>
@@ -100,21 +100,56 @@ function CopyButton({ textToCopy }) {
 }
 
 // --- Componente: Modal simples ---
-function Modal({ open, title, description, onCancel, onConfirm, confirmLabel = 'Confirmar', cancelLabel = 'Cancelar', theme = 'light' }) {
+function Modal({
+  open,
+  title,
+  description,
+  onCancel,
+  onConfirm,
+  confirmLabel = "Confirmar",
+  cancelLabel = "Cancelar",
+  theme = "light",
+}) {
   if (!open) return null;
   const themeColors = colors[theme] || colors.light;
-  const bg = theme === 'light' ? 'rgba(2,6,23,0.06)' : 'rgba(2,6,23,0.7)';
-  const modalBg = theme === 'light' ? '#fff' : '#0b0b12';
+  const bg = theme === "light" ? "rgba(2,6,23,0.06)" : "rgba(2,6,23,0.7)";
+  const modalBg = theme === "light" ? "#fff" : "#0b0b12";
   const textColor = themeColors.headline;
-  const descColor = theme === 'light' ? '#334155' : themeColors.paragraph;
+  const descColor = theme === "light" ? "#334155" : themeColors.paragraph;
   return (
-    <div className="modal-backdrop" style={{ position: 'fixed', inset: 0, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60 }}>
-      <div className="modal" style={{ background: modalBg, color: textColor, padding: 20, borderRadius: 10, width: 420, boxShadow: '0 8px 24px rgba(2,6,23,0.4)' }}>
+    <div
+      className="modal-backdrop"
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 60,
+      }}>
+      <div
+        className="modal"
+        style={{
+          background: modalBg,
+          color: textColor,
+          padding: 20,
+          borderRadius: 10,
+          width: 420,
+          boxShadow: "0 8px 24px rgba(2,6,23,0.4)",
+        }}>
         <h3 style={{ margin: 0, marginBottom: 8 }}>{title}</h3>
         <p style={{ marginTop: 0, marginBottom: 18, color: descColor }}>{description}</p>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-          <button className="btn" onClick={onCancel}>{cancelLabel}</button>
-          <button className="btn danger" onClick={onConfirm} style={{ background: themeColors.highlight, color: themeColors.buttonText }}>{confirmLabel}</button>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          <button className="btn" onClick={onCancel}>
+            {cancelLabel}
+          </button>
+          <button
+            className="btn danger"
+            onClick={onConfirm}
+            style={{ background: themeColors.highlight, color: themeColors.buttonText }}>
+            {confirmLabel}
+          </button>
         </div>
       </div>
     </div>
@@ -122,13 +157,20 @@ function Modal({ open, title, description, onCancel, onConfirm, confirmLabel = '
 }
 
 // --- Componente: Toast simples ---
-function Toast({ toast, theme = 'light' }) {
+function Toast({ toast, theme = "light" }) {
   if (!toast) return null;
   const themeColors = colors[theme] || colors.light;
-  const bg = toast.type === 'success' ? '#16a34a' : toast.type === 'error' ? '#dc2626' : themeColors.highlight;
+  const bg = toast.type === "success" ? "#16a34a" : toast.type === "error" ? "#dc2626" : themeColors.highlight;
   return (
-    <div style={{ position: 'fixed', right: 20, top: 20, zIndex: 70 }}>
-      <div style={{ background: bg, color: '#fff', padding: '10px 14px', borderRadius: 8, boxShadow: '0 6px 18px rgba(2,6,23,0.3)' }}>
+    <div style={{ position: "fixed", right: 20, top: 20, zIndex: 70 }}>
+      <div
+        style={{
+          background: bg,
+          color: "#fff",
+          padding: "10px 14px",
+          borderRadius: 8,
+          boxShadow: "0 6px 18px rgba(2,6,23,0.3)",
+        }}>
         {toast.message}
       </div>
     </div>
@@ -156,7 +198,14 @@ export default function Home() {
 
   // UI state para modal e toast
   const [toast, setToast] = useState(null);
-  const [confirmState, setConfirmState] = useState({ open: false, id: null, title: '', description: '' });
+  const [confirmState, setConfirmState] = useState({ open: false, id: null, title: "", description: "" });
+  // texto por serviço (editável)
+  const initialServiceTexts = Object.keys(allServices).reduce((acc, k) => {
+    acc[k] = `${allServices[k]} — Texto padrão. (pode ser substituído depois)`;
+    return acc;
+  }, {});
+  const [serviceTexts, setServiceTexts] = useState(initialServiceTexts);
+  const [editingService, setEditingService] = useState(null);
 
   const handleOptionChange = (e) => {
     const { name, value } = e.target;
@@ -232,31 +281,36 @@ export default function Home() {
 
   const handleDeleteProposal = async (id) => {
     // abrir modal de confirmação
-    setConfirmState({ open: true, id, title: 'Excluir Proposta', description: 'Deseja realmente apagar esta proposta? Esta ação não pode ser desfeita.' });
-  }
+    setConfirmState({
+      open: true,
+      id,
+      title: "Excluir Proposta",
+      description: "Deseja realmente apagar esta proposta? Esta ação não pode ser desfeita.",
+    });
+  };
 
   const doDeleteConfirmed = async () => {
     const id = confirmState.id;
     if (!id) return;
     try {
-      const res = await fetch(`/api/propostas/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/propostas/${id}`, { method: "DELETE" });
       if (res.status === 204 || res.ok) {
-        setSavedList((prev) => prev.filter(p => p.id !== id));
-        setToast({ type: 'success', message: 'Proposta excluída' });
+        setSavedList((prev) => prev.filter((p) => p.id !== id));
+        setToast({ type: "success", message: "Proposta excluída" });
         setTimeout(() => setToast(null), 3000);
       } else {
-        const json = await res.json().catch(()=>({}));
-        setToast({ type: 'error', message: 'Falha ao deletar: ' + (json.error || res.statusText) });
+        const json = await res.json().catch(() => ({}));
+        setToast({ type: "error", message: "Falha ao deletar: " + (json.error || res.statusText) });
         setTimeout(() => setToast(null), 4000);
       }
     } catch (e) {
       console.error(e);
-      setToast({ type: 'error', message: 'Erro ao conectar-se ao servidor' });
+      setToast({ type: "error", message: "Erro ao conectar-se ao servidor" });
       setTimeout(() => setToast(null), 4000);
     } finally {
-      setConfirmState({ open: false, id: null, title: '', description: '' });
+      setConfirmState({ open: false, id: null, title: "", description: "" });
     }
-  }
+  };
 
   return (
     <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
@@ -286,15 +340,37 @@ export default function Home() {
           <hr />
 
           <h3>Serviços (Seções)</h3>
-          <div className="services">
-            {Object.entries(allServices).map(([key, label]) => (
-              <label key={key} className="service-item">
-                <input type="checkbox" checked={!!services[key]} onChange={() => handleServiceToggle(key)} />
-                <span>{label}</span>
-              </label>
-            ))}
+          <div className="services sidebar-highlight">
+            <div className="service-grid">
+              {Object.entries(allServices).map(([key, label]) => (
+                <div key={key} className="service-card">
+                  <div>
+                    <input type="checkbox" checked={!!services[key]} onChange={() => handleServiceToggle(key)} />
+                  </div>
+                  <div className="service-meta">
+                    <h4>{label}</h4>
+                    <p>{serviceTexts[key]}</p>
+                    <div style={{ marginTop: 8 }}>
+                      <button className="btn" onClick={() => setEditingService(editingService === key ? null : key)}>
+                        {editingService === key ? "Fechar" : "Editar"}
+                      </button>
+                    </div>
+                    {editingService === key && (
+                      <div style={{ marginTop: 8 }}>
+                        <textarea
+                          value={serviceTexts[key]}
+                          onChange={(e) => setServiceTexts((prev) => ({ ...prev, [key]: e.target.value }))}
+                          rows={4}
+                          style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid var(--stroke)" }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
 
-            <div className="actions">
+            <div className="actions" style={{ marginTop: 12 }}>
               <label className="btn upload-btn" style={{ display: "inline-block", cursor: "pointer" }}>
                 Upload .docx modelo
                 <input
@@ -335,7 +411,7 @@ export default function Home() {
                     {new Date(s.createdAt).toLocaleString()}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: "flex", gap: 8 }}>
                   <button className="btn" onClick={() => handleLoadProposal(s.id)}>
                     Carregar
                   </button>
@@ -402,9 +478,9 @@ export default function Home() {
                 {Object.keys(allServices)
                   .filter((k) => services[k])
                   .map((k, idx) => (
-                    <div key={k}>
+                    <div key={k} className="section-editable">
                       <h3>{`2.${idx + 1} – ${allServices[k]}`}</h3>
-                      <p>Texto da seção {allServices[k]}... (pode ser substituído depois)</p>
+                      <p>{serviceTexts[k]}</p>
                     </div>
                   ))}
 
@@ -423,7 +499,7 @@ export default function Home() {
         title={confirmState.title}
         description={confirmState.description}
         theme={theme}
-        onCancel={() => setConfirmState({ open: false, id: null, title: '', description: '' })}
+        onCancel={() => setConfirmState({ open: false, id: null, title: "", description: "" })}
         onConfirm={doDeleteConfirmed}
         confirmLabel="Excluir"
       />
