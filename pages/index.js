@@ -30,6 +30,25 @@ const colors = {
   },
 };
 
+// --- Lista completa de serviços (mantida no topo) ---
+const allServices = {
+  folhaPagamento: "Folha de Pagamento (INSS)",
+  pasep: "Recuperação/Compensação PASEP",
+  rpps: "RPPS (Regime Próprio)",
+  impostoRenda: "Imposto de Renda (IRRF)",
+  cfem: "Compensação (Recursos Minerais - CFEM)",
+  cfurh: "Compensação (Recursos Hídricos - CFURH)",
+  tabelaSUS: "Tabela SUS",
+  fundef: "Recuperação FUNDEF",
+  fundeb: "Recuperação FUNDEB",
+  energiaEletrica: "Auditoria de Energia Elétrica",
+  royaltiesOleoGas: "Royalties (Óleo, Xisto e Gás)",
+  repassesFPM: "Repasses de Recursos do FPM (IPI/IR)",
+  revisaoParcelamento: "Revisão dos Parcelamentos Previdenciários",
+  issqn: "Recuperação de Créditos de ISSQN",
+  servicosTecnicos: "Serviços Técnicos (DF)",
+};
+
 function Header({ theme, toggleTheme }) {
   return (
     <header className={`header ${theme}`}>
@@ -74,15 +93,13 @@ function CopyButton({ textToCopy }) {
 export default function Home() {
   const [theme, setTheme] = useState("light");
   const [options, setOptions] = useState({ municipio: "Jaicós - PI", data: "07 de outubro de 2025" });
-  const [services, setServices] = useState({
-    folhaPagamento: true,
-    rpps: true,
-    impostoRenda: true,
-    energiaEletrica: true,
-    fundef: true,
-    fundeb: true,
-    servicosTecnicos: true,
-  });
+  // inicializa todos os serviços como true por padrão
+  const [services, setServices] = useState(() =>
+    Object.keys(allServices).reduce((acc, key) => {
+      acc[key] = true;
+      return acc;
+    }, {})
+  );
 
   const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
 
@@ -120,43 +137,49 @@ export default function Home() {
   };
 
   // --- Propostas (Opção A: salvar em JSON no servidor)
-  const [savedList, setSavedList] = useState([])
+  const [savedList, setSavedList] = useState([]);
 
   const fetchList = async () => {
     try {
-      const res = await fetch('/api/propostas')
+      const res = await fetch("/api/propostas");
       if (res.ok) {
-        const data = await res.json()
-        setSavedList(data.reverse())
+        const data = await res.json();
+        setSavedList(data.reverse());
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
-  useEffect(() => { fetchList() }, [])
+  useEffect(() => {
+    fetchList();
+  }, []);
 
   const handleSaveProposal = async () => {
-    const body = { municipio: options.municipio, data: options.data, services, html: proposalHtmlForCopy }
-    const res = await fetch('/api/propostas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    const body = { municipio: options.municipio, data: options.data, services, html: proposalHtmlForCopy };
+    const res = await fetch("/api/propostas", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
     if (res.ok) {
-      const item = await res.json()
-      setSavedList(prev => [item, ...prev])
-      alert('Proposta salva com sucesso')
+      const item = await res.json();
+      setSavedList((prev) => [item, ...prev]);
+      alert("Proposta salva com sucesso");
     } else {
-      alert('Falha ao salvar')
+      alert("Falha ao salvar");
     }
-  }
+  };
 
   const handleLoadProposal = async (id) => {
-    const res = await fetch(`/api/propostas/${id}`)
+    const res = await fetch(`/api/propostas/${id}`);
     if (res.ok) {
-      const p = await res.json()
-      setOptions({ municipio: p.municipio || options.municipio, data: p.data || options.data })
-      setServices(p.services || services)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      const p = await res.json();
+      setOptions({ municipio: p.municipio || options.municipio, data: p.data || options.data });
+      setServices(p.services || services);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }
+  };
 
   return (
     <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
@@ -187,22 +210,10 @@ export default function Home() {
 
           <h3>Serviços (Seções)</h3>
           <div className="services">
-            {Object.keys(services).map((key) => (
+            {Object.entries(allServices).map(([key, label]) => (
               <label key={key} className="service-item">
-                <input type="checkbox" checked={services[key]} onChange={() => handleServiceToggle(key)} />
-                <span>
-                  {
-                    {
-                      folhaPagamento: "2.1 - Folha de Pagamento",
-                      rpps: "2.2 - RPPS",
-                      impostoRenda: "2.3 - Imposto de Renda",
-                      energiaEletrica: "2.4 - Auditoria Energia",
-                      fundef: "2.5 - Recuperação FUNDEF",
-                      fundeb: "2.6 - Recuperação FUNDEB",
-                      servicosTecnicos: "2.7 - Serviços Técnicos",
-                    }[key]
-                  }
-                </span>
+                <input type="checkbox" checked={!!services[key]} onChange={() => handleServiceToggle(key)} />
+                <span>{label}</span>
               </label>
             ))}
 
@@ -220,22 +231,37 @@ export default function Home() {
                   }}
                 />
               </label>
-              <button className="btn primary" style={{ marginLeft: 8 }} onClick={handleSaveProposal}>Salvar Proposta</button>
+              <button className="btn primary" style={{ marginLeft: 8 }} onClick={handleSaveProposal}>
+                Salvar Proposta
+              </button>
             </div>
           </div>
 
           <hr style={{ marginTop: 18 }} />
           <h3 style={{ marginTop: 12 }}>Propostas Salvas</h3>
-          <div style={{ maxHeight: 220, overflowY: 'auto', marginTop: 8 }}>
-            {savedList.length === 0 && <p style={{ color: 'rgba(11,37,69,0.6)' }}>Nenhuma proposta salva</p>}
-            {savedList.map(s => (
-              <div key={s.id} className="saved-item" style={{ padding: 8, borderBottom: '1px solid rgba(11,37,69,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ maxHeight: 220, overflowY: "auto", marginTop: 8 }}>
+            {savedList.length === 0 && <p style={{ color: "rgba(11,37,69,0.6)" }}>Nenhuma proposta salva</p>}
+            {savedList.map((s) => (
+              <div
+                key={s.id}
+                className="saved-item"
+                style={{
+                  padding: 8,
+                  borderBottom: "1px solid rgba(11,37,69,0.04)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}>
                 <div>
                   <div style={{ fontWeight: 700 }}>{s.municipio}</div>
-                  <div style={{ fontSize: 12, color: 'rgba(11,37,69,0.6)' }}>{new Date(s.createdAt).toLocaleString()}</div>
+                  <div style={{ fontSize: 12, color: "rgba(11,37,69,0.6)" }}>
+                    {new Date(s.createdAt).toLocaleString()}
+                  </div>
                 </div>
                 <div>
-                  <button className="btn" onClick={() => handleLoadProposal(s.id)}>Carregar</button>
+                  <button className="btn" onClick={() => handleLoadProposal(s.id)}>
+                    Carregar
+                  </button>
                 </div>
               </div>
             ))}
@@ -281,75 +307,26 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody>
-                    {services.folhaPagamento && (
-                      <tr>
-                        <td>Folha de pagamento, recuperação de verbas</td>
-                        <td>Cabível</td>
-                      </tr>
-                    )}
-                    {services.rpps && (
-                      <tr>
-                        <td>RPPS - Regime Próprio</td>
-                        <td>Cabível</td>
-                      </tr>
-                    )}
-                    {services.impostoRenda && (
-                      <tr>
-                        <td>Imposto de Renda (IRRF)</td>
-                        <td>Cabível</td>
-                      </tr>
-                    )}
-                    {services.energiaEletrica && (
-                      <tr>
-                        <td>Auditoria de Energia Elétrica</td>
-                        <td>Cabível</td>
-                      </tr>
-                    )}
-                    {services.fundef && (
-                      <tr>
-                        <td>Recuperação FUNDEF</td>
-                        <td>Cabível</td>
-                      </tr>
-                    )}
-                    {services.fundeb && (
-                      <tr>
-                        <td>Recuperação FUNDEB</td>
-                        <td>Cabível</td>
-                      </tr>
-                    )}
-                    {services.servicosTecnicos && (
-                      <tr>
-                        <td>Serviços Técnicos</td>
-                        <td>Cabível</td>
-                      </tr>
-                    )}
+                    {Object.keys(allServices)
+                      .filter((k) => services[k])
+                      .map((k) => (
+                        <tr key={k}>
+                          <td>{allServices[k]}</td>
+                          <td>Cabível</td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
 
-                {services.folhaPagamento && (
-                  <>
-                    <h3>2.1 – Folha de pagamento</h3>
-                    <p>Realização de auditoria das folhas de pagamento...</p>
-                  </>
-                )}
-                {services.rpps && (
-                  <>
-                    <h3>2.2 – RPPS</h3>
-                    <p>Texto da seção 2.2...</p>
-                  </>
-                )}
-                {services.impostoRenda && (
-                  <>
-                    <h3>2.3 – IRRF</h3>
-                    <p>Texto da seção 2.3...</p>
-                  </>
-                )}
-                {services.energiaEletrica && (
-                  <>
-                    <h3>2.4 – Auditoria de Energia</h3>
-                    <p>Texto da seção 2.4...</p>
-                  </>
-                )}
+                {/* Renderiza seções dinamicamente com numeração 2.1, 2.2 ... */}
+                {Object.keys(allServices)
+                  .filter((k) => services[k])
+                  .map((k, idx) => (
+                    <div key={k}>
+                      <h3>{`2.${idx + 1} – ${allServices[k]}`}</h3>
+                      <p>Texto da seção {allServices[k]}... (pode ser substituído depois)</p>
+                    </div>
+                  ))}
 
                 <div className="signature">Brasília-DF, {options.data}.</div>
               </div>

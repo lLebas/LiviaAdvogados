@@ -11,6 +11,8 @@ self.__BUILD_MANIFEST = {
     "/",
     "/_app",
     "/_error",
-    "/api/process-docx"
+    "/api/process-docx",
+    "/api/propostas",
+    "/api/propostas/[id]"
   ]
 };self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()
