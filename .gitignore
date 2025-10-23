@@ -4,6 +4,24 @@ node_modules
 
 /src/generated/prisma
 
-# Next.js build output
+# Next.js build output (não usado)
 .next
 
+# Vite build output
+dist
+dist-ssr
+*.local
+
+# Arquivos de configuração desnecessários
+prisma.config.ts.backup
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
