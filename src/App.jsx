@@ -1,10 +1,12 @@
-import React, { useState, useMemo } from "react";
-import Modal from "./Modal";
+import React, { useState, useMemo, lazy, Suspense } from "react";
 import DOMPurify from "dompurify";
 import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
 import { saveAs } from "file-saver";
 import mammoth from "mammoth";
 import { Document, Packer, Paragraph, TextRun } from "docx";
+
+// Lazy load dos componentes pesados
+const Modal = lazy(() => import("./Modal"));
 
 // Paleta baseada nas imagens enviadas
 const colors = {
@@ -160,7 +162,12 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
 
   const handleOptionChange = (e) => {
     const { name, value } = e.target;
-    setOptions((prev) => ({ ...prev, [name]: value }));
+    // Sanitizar entrada para prevenir XSS
+    const sanitizedValue = value
+      .replace(/<script[^>]*>.*?<\/script>/gi, '') // Remove scripts
+      .replace(/<[^>]+>/g, '') // Remove tags HTML
+      .trim();
+    setOptions((prev) => ({ ...prev, [name]: sanitizedValue }));
   };
 
   return (
@@ -214,12 +221,24 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
 
       <div className="field">
         <label>Município Destinatário</label>
-        <input name="municipio" value={options.municipio} onChange={handleOptionChange} />
+        <input 
+          name="municipio" 
+          value={options.municipio} 
+          onChange={handleOptionChange}
+          maxLength={100}
+          placeholder="Nome do Município"
+        />
       </div>
 
       <div className="field">
         <label>Data da Proposta</label>
-        <input name="data" value={options.data} onChange={handleOptionChange} />
+        <input 
+          name="data" 
+          value={options.data} 
+          onChange={handleOptionChange}
+          maxLength={50}
+          placeholder="DD de mês de AAAA"
+        />
       </div>
 
       <hr />
@@ -565,9 +584,56 @@ export default function App() {
       }
     });
 
+  // Função para validar arquivos .docx
+  const validateDocxFile = (file) => {
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    const ALLOWED_TYPES = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword'
+    ];
+    const ALLOWED_EXTENSIONS = ['.docx', '.doc'];
+
+    // Validar se arquivo existe
+    if (!file) {
+      return { valid: false, error: 'Nenhum arquivo selecionado.' };
+    }
+
+    // Validar tamanho
+    if (file.size > MAX_SIZE) {
+      return { valid: false, error: `Arquivo muito grande. Tamanho máximo: 10MB. Tamanho do arquivo: ${(file.size / 1024 / 1024).toFixed(2)}MB` };
+    }
+
+    // Validar extensão
+    const fileName = file.name.toLowerCase();
+    const hasValidExtension = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
+    if (!hasValidExtension) {
+      return { valid: false, error: 'Formato inválido. Use apenas arquivos .docx ou .doc' };
+    }
+
+    // Validar tipo MIME
+    if (file.type && !ALLOWED_TYPES.includes(file.type)) {
+      return { valid: false, error: 'Tipo de arquivo inválido. Use apenas documentos Word.' };
+    }
+
+    return { valid: true };
+  };
+
   // Importar documento .docx e preencher campos automaticamente
   const importDocx = async (file) => {
-    if (!file) return;
+    // Validar arquivo antes de processar
+    const validation = validateDocxFile(file);
+    if (!validation.valid) {
+      setModal({
+        open: true,
+        title: 'Arquivo inválido',
+        message: validation.error,
+        confirmText: 'OK',
+        type: 'error',
+        onConfirm: () => setModal(m => ({ ...m, open: false })),
+      });
+      return;
+    }
+
     try {
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.extractRawText({ arrayBuffer });
@@ -796,7 +862,20 @@ export default function App() {
 
   // Processar upload de .docx: substituir município, data e remover seções 2.2-2.8
   const handleUpload = async (file) => {
-    if (!file) return;
+    // Validar arquivo antes de processar
+    const validation = validateDocxFile(file);
+    if (!validation.valid) {
+      setModal({
+        open: true,
+        title: 'Arquivo inválido',
+        message: validation.error,
+        confirmText: 'OK',
+        type: 'error',
+        onConfirm: () => setModal(m => ({ ...m, open: false })),
+      });
+      return;
+    }
+
     try {
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.extractRawText({ arrayBuffer });
@@ -880,7 +959,9 @@ export default function App() {
           <ProposalDocument theme={theme} options={options} services={services} />
           <CopyButton theme={theme} textToCopy={proposalHtmlForCopy} />
         </div>
-        <Modal {...modal} />
+        <Suspense fallback={<div />}>
+          <Modal {...modal} />
+        </Suspense>
       </main>
     </div>
   );
