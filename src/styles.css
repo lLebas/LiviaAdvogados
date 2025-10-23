@@ -332,4 +332,10 @@ html,
   opacity: 0.8;
 }
 
+.btn-small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #999;
+}
+
 /* Dark theme is handled via CSS variables on .app.dark */

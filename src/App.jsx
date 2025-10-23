@@ -1,12 +1,10 @@
-import React, { useState, useMemo, lazy, Suspense } from "react";
+import React, { useState, useMemo } from "react";
+import Modal from "./Modal";
 import DOMPurify from "dompurify";
-import { Sun, Moon, Clipboard, Settings, FileText } from "lucide-react";
+import { Clipboard, Settings, FileText } from "lucide-react";
 import { saveAs } from "file-saver";
 import mammoth from "mammoth";
 import { Document, Packer, Paragraph, TextRun } from "docx";
-
-// Lazy load dos componentes pesados
-const Modal = lazy(() => import("./Modal"));
 
 // Paleta baseada nas imagens enviadas
 const colors = {
@@ -141,15 +139,12 @@ const serviceTextDatabase = {
   `,
 };
 
-const Header = ({ theme, toggleTheme }) => (
+const Header = ({ theme }) => (
   <header className={`header ${theme}`}>
     <div className="left">
       <FileText size={28} />
       <h1>Gerador de Propostas</h1>
     </div>
-    <button onClick={toggleTheme} className="theme-btn" aria-label="Mudar tema">
-      {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-    </button>
   </header>
 );
 
@@ -270,19 +265,6 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
           <button id="download-docx" className="btn primary" style={{ width: '100%', marginBottom: '8px' }} onClick={onDownloadDocx}>
             ⬇️ Baixar .docx
           </button>
-          <button 
-            onClick={() => document.getElementById('upload-docx').click()}
-            className="btn" 
-            style={{ 
-              width: '100%',
-              background: 'var(--surface)',
-              border: '2px solid var(--stroke)',
-              color: 'var(--headline)'
-            }}
-          >
-            ⬆️ Upload .docx Modelo
-          </button>
-          <input id="upload-docx" type="file" accept=".docx" style={{ display: "none" }} />
         </div>
       </div>
 
@@ -297,38 +279,66 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
           </p>
         ) : (
           <div className="proposals-list">
-            {savedProposals.map((proposal) => (
-              <div key={proposal.id} className="proposal-item" style={{ 
-                padding: '12px', 
-                marginBottom: '8px', 
-                border: `1px solid ${themeColors.sidebarBorder}`,
-                borderRadius: '4px',
-                backgroundColor: themeColors.docBg
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ flex: 1 }}>
-                    <strong style={{ display: 'block', marginBottom: '4px' }}>{proposal.municipio}</strong>
-                    <small style={{ color: themeColors.paragraph, fontSize: '12px' }}>{proposal.data}</small>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button 
-                      onClick={() => onLoadProposal(proposal)}
-                      className="btn-small"
-                      style={{ padding: '4px 8px', fontSize: '12px' }}
-                    >
-                      Carregar
-                    </button>
-                    <button 
-                      onClick={() => onDeleteProposal(proposal.id)}
-                      className="btn-small"
-                      style={{ padding: '4px 8px', fontSize: '12px', backgroundColor: '#dc3545', color: 'white' }}
-                    >
-                      Excluir
-                    </button>
+            {savedProposals.map((proposal) => {
+              // Calcular dias restantes
+              const daysRemaining = proposal.expiresAt 
+                ? Math.ceil((proposal.expiresAt - Date.now()) / (1000 * 60 * 60 * 24))
+                : null;
+              
+              const isExpiringSoon = daysRemaining && daysRemaining <= 3;
+              const isExpired = daysRemaining && daysRemaining <= 0;
+              
+              return (
+                <div key={proposal.id} className="proposal-item" style={{ 
+                  padding: '12px', 
+                  marginBottom: '8px', 
+                  border: `1px solid ${isExpiringSoon ? '#ff9800' : themeColors.sidebarBorder}`,
+                  borderRadius: '4px',
+                  backgroundColor: isExpired ? '#ffebee' : themeColors.docBg,
+                  opacity: isExpired ? 0.7 : 1
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ flex: 1 }}>
+                      <strong style={{ display: 'block', marginBottom: '4px' }}>{proposal.municipio}</strong>
+                      <small style={{ color: themeColors.paragraph, fontSize: '12px', display: 'block' }}>
+                        {proposal.data}
+                      </small>
+                      {daysRemaining !== null && (
+                        <small style={{ 
+                          color: isExpired ? '#c62828' : (isExpiringSoon ? '#f57c00' : '#666'),
+                          fontSize: '11px',
+                          display: 'block',
+                          marginTop: '4px',
+                          fontWeight: isExpiringSoon ? 'bold' : 'normal'
+                        }}>
+                          {isExpired 
+                            ? '⚠️ Expirada' 
+                            : `⏰ Expira em ${daysRemaining} dia${daysRemaining !== 1 ? 's' : ''}`
+                          }
+                        </small>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button 
+                        onClick={() => onLoadProposal(proposal)}
+                        className="btn-small"
+                        style={{ padding: '4px 8px', fontSize: '12px' }}
+                        disabled={isExpired}
+                      >
+                        Carregar
+                      </button>
+                      <button 
+                        onClick={() => onDeleteProposal(proposal.id)}
+                        className="btn-small"
+                        style={{ padding: '4px 8px', fontSize: '12px', backgroundColor: '#dc3545', color: 'white' }}
+                      >
+                        Excluir
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -552,11 +562,30 @@ export default function App() {
   );
   const [savedProposals, setSavedProposals] = useState([]);
 
-  // Carregar propostas salvas do localStorage ao iniciar
+  // Função para limpar propostas expiradas
+  const cleanExpiredProposals = (proposals) => {
+    const now = Date.now();
+    return proposals.filter(p => {
+      // Se a proposta não tem expiresAt (propostas antigas), manter por compatibilidade
+      if (!p.expiresAt) return true;
+      return p.expiresAt > now;
+    });
+  };
+
+  // Carregar propostas salvas do localStorage ao iniciar e limpar expiradas
   React.useEffect(() => {
     const saved = localStorage.getItem('savedProposals');
     if (saved) {
-      setSavedProposals(JSON.parse(saved));
+      const allProposals = JSON.parse(saved);
+      const validProposals = cleanExpiredProposals(allProposals);
+      
+      // Se alguma proposta foi removida, atualizar localStorage
+      if (validProposals.length !== allProposals.length) {
+        localStorage.setItem('savedProposals', JSON.stringify(validProposals));
+        console.log(`${allProposals.length - validProposals.length} proposta(s) expirada(s) foi(ram) deletada(s) automaticamente.`);
+      }
+      
+      setSavedProposals(validProposals);
     }
   }, []);
 
@@ -577,12 +606,11 @@ export default function App() {
             return acc;
           }, {})
         );
-        setProposalName("");
-        setSelectedProposal(null);
-        setShowModal(false);
         setModal({ ...modal, open: false });
-      }
+      },
+      onCancel: () => setModal({ ...modal, open: false })
     });
+  };
 
   // Função para validar arquivos .docx
   const validateDocxFile = (file) => {
@@ -681,26 +709,35 @@ export default function App() {
     }
   };
 
-  const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
-
   // Salvar proposta atual
   const saveProposal = () => {
+    const now = Date.now();
+    const expiresAt = now + (14 * 24 * 60 * 60 * 1000); // 14 dias em milissegundos
+    
     const newProposal = {
-      id: Date.now(),
+      id: now,
       municipio: options.municipio,
       data: options.data,
       timestamp: new Date().toLocaleString('pt-BR'),
+      createdAt: now,
+      expiresAt: expiresAt,
       services: { ...services },
       options: { ...options }
     };
     
-    const updated = [...savedProposals, newProposal];
+    // Filtrar propostas expiradas antes de salvar
+    const validProposals = savedProposals.filter(p => p.expiresAt > now);
+    const updated = [...validProposals, newProposal];
+    
     setSavedProposals(updated);
     localStorage.setItem('savedProposals', JSON.stringify(updated));
+    
+    const daysRemaining = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
+    
     setModal({
       open: true,
       title: 'Proposta Salva',
-      message: `Proposta para ${options.municipio} salva com sucesso!`,
+      message: `Proposta para ${options.municipio} salva com sucesso!\n\nEsta proposta será automaticamente deletada em ${daysRemaining} dias (${new Date(expiresAt).toLocaleDateString('pt-BR')}).`,
       confirmText: 'OK',
       type: 'success',
       onConfirm: () => setModal(m => ({ ...m, open: false })),
@@ -709,6 +746,25 @@ export default function App() {
 
   // Carregar proposta salva
   const loadProposal = (proposal) => {
+    // Verificar se a proposta expirou
+    if (proposal.expiresAt && proposal.expiresAt < Date.now()) {
+      setModal({
+        open: true,
+        title: 'Proposta Expirada',
+        message: 'Esta proposta expirou e será deletada automaticamente. Por favor, selecione outra proposta.',
+        confirmText: 'OK',
+        type: 'error',
+        onConfirm: () => {
+          // Remover a proposta expirada
+          const updated = savedProposals.filter(p => p.id !== proposal.id);
+          setSavedProposals(updated);
+          localStorage.setItem('savedProposals', JSON.stringify(updated));
+          setModal(m => ({ ...m, open: false }));
+        },
+      });
+      return;
+    }
+    
     setOptions(proposal.options);
     setServices(proposal.services);
   };
@@ -939,7 +995,7 @@ export default function App() {
 
   return (
     <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+      <Header theme={theme} />
       <main className="main">
         <ControlsSidebar
           theme={theme}
@@ -959,10 +1015,8 @@ export default function App() {
           <ProposalDocument theme={theme} options={options} services={services} />
           <CopyButton theme={theme} textToCopy={proposalHtmlForCopy} />
         </div>
-        <Suspense fallback={<div />}>
-          <Modal {...modal} />
-        </Suspense>
+        <Modal {...modal} />
       </main>
     </div>
   );
-}}
+}
