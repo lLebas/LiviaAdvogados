@@ -151,7 +151,7 @@ const Header = ({ theme, toggleTheme }) => (
   </header>
 );
 
-const ControlsSidebar = ({ theme, options, setOptions, services, setServices, savedProposals, onLoadProposal, onDeleteProposal, onStartFromScratch, onImportDocx }) => {
+const ControlsSidebar = ({ theme, options, setOptions, services, setServices, savedProposals, onLoadProposal, onDeleteProposal, onStartFromScratch, onImportDocx, onSaveProposal, onDownloadDocx }) => {
   const themeColors = colors[theme];
 
   const handleServiceChange = (serviceName) => {
@@ -245,10 +245,10 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
         ))}
 
         <div className="actions">
-          <button id="save-proposal" className="btn primary" style={{ width: '100%', marginBottom: '8px' }}>
+          <button id="save-proposal" className="btn primary" style={{ width: '100%', marginBottom: '8px' }} onClick={onSaveProposal}>
             💾 Salvar Proposta
           </button>
-          <button id="download-docx" className="btn primary" style={{ width: '100%', marginBottom: '8px' }}>
+          <button id="download-docx" className="btn primary" style={{ width: '100%', marginBottom: '8px' }} onClick={onDownloadDocx}>
             ⬇️ Baixar .docx
           </button>
           <button 
@@ -322,8 +322,12 @@ const CopyButton = ({ theme, textToCopy }) => {
 
   const handleCopy = () => {
     try {
+      // Cria um elemento temporário para copiar texto limpo (sem HTML)
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = textToCopy;
+      const cleanText = tempDiv.innerText;
       const textarea = document.createElement("textarea");
-      textarea.value = textToCopy;
+      textarea.value = cleanText;
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand("copy");
@@ -515,6 +519,8 @@ const ProposalDocument = ({ theme, options, services }) => {
 };
 
 export default function App() {
+  // Função para começar do zero
+  // (removida duplicidade, usar apenas a versão do modal abaixo)
   // Modal state
   const [modal, setModal] = useState({ open: false, title: '', message: '', onConfirm: null, onCancel: null, confirmText: 'OK', cancelText: 'Cancelar', type: 'info' });
   const [theme, setTheme] = useState("light");
@@ -545,18 +551,19 @@ export default function App() {
       cancelText: 'Cancelar',
       type: 'warning',
       onConfirm: () => {
-        setOptions({ municipio: "", data: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) });
+        setOptions({ municipio: "", destinatario: "", data: "" }); // limpa todos os campos
         setServices(
           Object.keys(allServices).reduce((acc, key) => {
-            acc[key] = true;
+            acc[key] = false;
             return acc;
           }, {})
         );
-        setModal(m => ({ ...m, open: false }));
-      },
-      onCancel: () => setModal(m => ({ ...m, open: false })),
+        setProposalName("");
+        setSelectedProposal(null);
+        setShowModal(false);
+        setModal({ ...modal, open: false });
+      }
     });
-  };
 
   // Importar documento .docx e preencher campos automaticamente
   const importDocx = async (file) => {
@@ -661,30 +668,130 @@ export default function App() {
 
   // Gera HTML para copiar
   const proposalHtmlForCopy = useMemo(() => {
-    const el = document.getElementById("preview");
-    return el ? el.innerHTML : "";
+    // Gera o mesmo HTML que está na prévia
+    // Usado para copiar e para exportar
+    // Reutiliza a lógica do ProposalDocument
+    // (mantém igual ao que está renderizado)
+    let sectionCounter = 1;
+    const getSectionTitle = (key, text) => {
+      if (!services[key]) return "";
+      const title = `2.${sectionCounter} – ${text}`;
+      sectionCounter++;
+      return title;
+    };
+    sectionCounter = 1;
+    const serviceTitles = {
+      folhaPagamento: getSectionTitle("folhaPagamento", "Folha de pagamento (INSS)"),
+      pasep: getSectionTitle("pasep", "Recuperação/ compensação PASEP"),
+      rpps: getSectionTitle("rpps", "RPPS - Regime Próprio de Previdência Social"),
+      impostoRenda: getSectionTitle("impostoRenda", "Imposto de Renda Retido na Fonte"),
+      cfem: getSectionTitle("cfem", "Compensação Financeira (Recursos Minerais – CFEM)"),
+      cfurh: getSectionTitle("cfurh", "Compensação Financeira (Recursos Hídricos – CFURH)"),
+      tabelaSUS: getSectionTitle("tabelaSUS", "Tabela SUS"),
+      fundef: getSectionTitle("fundef", "Recuperação FUNDEF"),
+      fundeb: getSectionTitle("fundeb", "Recuperação FUNDEB"),
+      energiaEletrica: getSectionTitle("energiaEletrica", "Auditoria de Energia Elétrica"),
+      royaltiesOleoGas: getSectionTitle("royaltiesOleoGas", "Royalties (Óleo, Xisto e Gás)"),
+      repassesFPM: getSectionTitle("repassesFPM", "Repasses de Recursos do FPM (IPI/IR)"),
+      revisaoParcelamento: getSectionTitle("revisaoParcelamento", "Revisão dos Parcelamentos Previdenciários"),
+      issqn: getSectionTitle("issqn", "Recuperação de Créditos de ISSQN"),
+      servicosTecnicos: getSectionTitle("servicosTecnicos", "Serviços Técnicos Especializados (DF)"),
+    };
+    sectionCounter = 1;
+    // Monta o HTML igual à prévia, com fonte Garamond e tamanho 13px
+    return `
+      <div class="doc" style="font-family: Garamond, serif; font-size: 13px; color: #222;">
+        <h1 style="margin-bottom:10px; font-family: Garamond, serif; font-size: 20px;">CAVALCANTE REIS</h1>
+        <p><strong>Proponente:</strong> Cavalcante Reis Advogados</p>
+        <p><strong>Destinatário:</strong> Prefeitura Municipal de ${options.municipio || "[Nome do Município]"}</p>
+        <div style="margin: 24px 0;">
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">Sumário</h2>
+          <ol style="margin-top:8px; padding-left: 20px;">
+            <li>Objeto da Proposta</li>
+            <li>Análise da Questão</li>
+            <li>Dos Honorários, das Condições de Pagamento e Despesas</li>
+            <li>Prazo e Cronograma de Execução dos Serviços</li>
+            <li>Experiência e Equipe Responsável</li>
+            <li>Disposições Finais</li>
+          </ol>
+        </div>
+        <div class="proposal-section" style="margin: 24px 0;">
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">1. Objeto da Proposta</h2>
+          <p style="margin: 8px 0;">É objeto do presente contrato o desenvolvimento de serviços advocatícios especializados por parte da Proponente, Cavalcante Reis Advogados, ao Aceitante, Município de ${options.municipio || "[Nome do Município]"}, a fim de prestação de serviços de assessoria técnica e jurídica nas áreas de Direito Público, Tributário, Econômico, Financeiro, Minerário e Previdenciário, atuando perante o Ministério da Fazenda e os seus órgãos administrativos, em especial para alcançar o incremento de receitas, ficando responsável pelo ajuizamento, acompanhamento e eventuais intervenções de terceiro em ações de interesse do Município.</p>
+          <p class="mb-4">A proposta inclui os seguintes objetos:</p>
+          <table class="w-full border-collapse border mb-4" style="width:100%; border:1px solid #ddd; font-family: Garamond, serif; font-size: 13px;">
+            <thead>
+              <tr style="background:#f7f7f7; text-align:left;">
+                <th class="p-2 border-r" style="padding:8px; border-right:1px solid #ddd;">TESE</th>
+                <th class="p-2" style="padding:8px;">CABIMENTO / PERSPECTIVA</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${Object.entries(allServices).map(([key, label]) => services[key] ? `<tr class="border-b"><td class="p-2 align-top">${label}</td><td class="p-2 align-top">Cabível</td></tr>` : "").join("")}
+            </tbody>
+          </table>
+        </div>
+        <div class="proposal-section" style="margin: 24px 0;">
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">2. Análise da Questão</h2>
+          ${Object.entries(allServices).map(([key, label]) => services[key] ? `<h3 class="font-bold text-lg mt-6 mb-2" style="font-family: Garamond, serif; font-size: 14px;">${serviceTitles[key]}</h3><div class="space-y-4">${serviceTextDatabase[key]}</div>` : "").join("")}
+        </div>
+        <div class="proposal-section" style="margin: 24px 0;">
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">3. Dos Honorários, das Condições de Pagamento e Despesas</h2>
+          <p>Os valores levantados a título de incremento são provisórios, baseados em informações preliminares, podendo, ao final, representar valores a maior ou a menor.</p>
+          <ul style="margin-top:8px; padding-left:20px; list-style:disc; font-family: Garamond, serif; font-size: 13px;">
+            <li><strong>3.1.1</strong> Para todos os demais itens descritos nesta Proposta será efetuado o pagamento de honorários advocatícios à CAVALCANTE REIS ADVOGADOS pela execução dos serviços de recuperação de créditos, ad êxito na ordem de R$ 0,12 para cada R$ 1,00.</li>
+            <li><strong>3.1.2</strong> Em caso de valores retroativos recuperados em favor da municipalidade, os honorários também serão cobrados na ordem de R$ 0,12 para cada R$ 1,00 e serão pagos quando da expedição do Precatório ou RPV, ou quando da efetiva compensação dos valores.</li>
+            <li><strong>3.1.3</strong> Sendo um contrato AD EXITUM, a CONTRATADA só receberá os honorários quando do êxito da demanda.</li>
+          </ul>
+        </div>
+        <div class="proposal-section" style="margin: 24px 0;">
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">4. Prazo e Cronograma de Execução dos Serviços</h2>
+          <p>O prazo de execução será de 24 (vinte e quatro) meses ou pelo tempo que perdurar os processos judiciais, podendo ser prorrogado por interesse das partes.</p>
+        </div>
+        <div class="proposal-section" style="margin: 24px 0;">
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">5. Experiência e Equipe Responsável</h2>
+          <p>No portfólio de serviços executados e/ou em execução, constam diversos Municípios contratantes.</p>
+        </div>
+        <div class="proposal-section" style="margin: 24px 0;">
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">6. Disposições Finais</h2>
+          <div style="margin-top:16px; border-top:1px solid #ddd; padding-top:16px; text-align:center; font-family: Garamond, serif; font-size: 13px;">
+            <p>Brasília-DF, ${options.data || "[Data da Proposta]"}.</p>
+            <p style="margin-top:12px; font-weight:bold;">Atenciosamente,</p>
+            <p style="margin-top:8px; font-weight:bold;">CAVALCANTE REIS ADVOGADOS</p>
+          </div>
+        </div>
+      </div>
+    `;
   }, [options, services, theme]);
 
-  // Função para gerar docx simples
+  // Função para gerar docx igual à prévia
   const generateDocx = async () => {
-    const doc = new Document();
-    doc.addSection({
-      children: [
-        new Paragraph({ children: [new TextRun({ text: "CAVALCANTE REIS", bold: true, size: 28 })] }),
-        new Paragraph({ children: [new TextRun(`Destinatário: Prefeitura Municipal de ${options.municipio}`)] }),
-      ],
+    // Usa o HTML da prévia para montar o texto
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = proposalHtmlForCopy;
+    const cleanText = tempDiv.innerText;
+    const doc = new Document({
+      styles: {
+        paragraphStyles: [
+          {
+            id: "Normal",
+            name: "Normal",
+            run: {
+              font: "Garamond",
+              size: 26, // 13pt (docx usa metade do valor em twips)
+              color: "222222"
+            },
+            paragraph: {
+              spacing: { after: 120 },
+            },
+          },
+        ],
+      },
     });
-
-    if (services.folhaPagamento) {
-      doc.addSection({ children: [new Paragraph("2.1 – Folha de pagamento"), new Paragraph("Texto da seção 2.1...")] });
-    }
-    if (services.rpps) {
-      doc.addSection({ children: [new Paragraph("2.2 – RPPS"), new Paragraph("Texto da seção 2.2...")] });
-    }
-
+    doc.addSection({ children: [new Paragraph({ text: cleanText, style: "Normal" })] });
     const packer = new Packer();
     const blob = await packer.toBlob(doc);
-    saveAs(blob, `Proposta - ${options.municipio}.docx`);
+    saveAs(blob, `Proposta - ${options.municipio || "Municipio"}.docx`);
   };
 
   // Processar upload de .docx: substituir município, data e remover seções 2.2-2.8
@@ -738,14 +845,10 @@ export default function App() {
     }
   };
 
-  // Vincular botão de download ao clique global (simples)
+  // Handler para download e salvar, passado para o sidebar
+  const onDownloadDocx = generateDocx;
+  const onSaveProposal = saveProposal;
   React.useEffect(() => {
-    const btn = document.getElementById("download-docx");
-    if (btn) btn.onclick = generateDocx;
-
-    const saveBtn = document.getElementById("save-proposal");
-    if (saveBtn) saveBtn.onclick = saveProposal;
-
     const upload = document.getElementById("upload-docx");
     if (upload) {
       upload.onchange = (e) => {
@@ -770,6 +873,8 @@ export default function App() {
           onDeleteProposal={deleteProposal}
           onStartFromScratch={startFromScratch}
           onImportDocx={importDocx}
+          onSaveProposal={saveProposal}
+          onDownloadDocx={generateDocx}
         />
         <div className="content">
           <ProposalDocument theme={theme} options={options} services={services} />
