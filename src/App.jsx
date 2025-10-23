@@ -174,18 +174,18 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
 
       {/* Botões de Início */}
       <div className="start-buttons" style={{ marginTop: '16px', marginBottom: '16px' }}>
-        <button 
-          onClick={onStartFromScratch}
-          className="btn" 
-          style={{ 
-            width: '100%', 
-            marginBottom: '8px',
-            background: 'var(--button)',
-            color: 'var(--button-text)'
-          }}
-        >
-          🆕 Começar do Zero
-        </button>
+          <button 
+            onClick={onStartFromScratch}
+            className="btn" 
+            style={{ 
+              width: '100%', 
+              marginBottom: '8px',
+              background: 'var(--button)',
+              color: 'var(--button-text)'
+            }}
+          >
+            Começar do Zero
+          </button>
         <button 
           onClick={() => document.getElementById('import-docx-input').click()}
           className="btn" 
@@ -884,4 +884,4 @@ export default function App() {
       </main>
     </div>
   );
-}
+}}
