@@ -148,7 +148,7 @@ const Header = ({ theme }) => (
   </header>
 );
 
-const ControlsSidebar = ({ theme, options, setOptions, services, setServices, savedProposals, onLoadProposal, onDeleteProposal, onStartFromScratch, onImportDocx, onSaveProposal, onDownloadDocx }) => {
+const ControlsSidebar = ({ theme, options, setOptions, services, setServices, savedProposals, onLoadProposal, onDeleteProposal, onStartFromScratch, onImportDocx, onSaveProposal, onDownloadDocx, proposalHtmlForCopy }) => {
   const themeColors = colors[theme];
 
   const handleServiceChange = (serviceName) => {
@@ -163,6 +163,28 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
       .replace(/<[^>]+>/g, '') // Remove tags HTML
       .trim();
     setOptions((prev) => ({ ...prev, [name]: sanitizedValue }));
+  };
+
+  // Função para copiar proposta
+  const handleCopy = () => {
+    try {
+      const textArea = document.createElement("textarea");
+      // Limpa HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = proposalHtmlForCopy.replace(/<br\s*\/?\>/gi, '\n');
+      const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+      textArea.value = cleanText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      if (typeof setShowCopyToast === 'function') {
+        setShowCopyToast(true);
+        setTimeout(() => setShowCopyToast(false), 2000);
+      }
+    } catch (err) {
+      console.error('Falha ao copiar texto: ', err);
+    }
   };
 
   return (
@@ -259,11 +281,41 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
         ))}
 
         <div className="actions">
-          <button id="save-proposal" className="btn primary" style={{ width: '100%', marginBottom: '8px' }} onClick={onSaveProposal}>
+          <button
+            id="save-proposal"
+            className="btn primary"
+            style={{ width: "100%", marginBottom: "8px" }}
+            onClick={onSaveProposal}>
             💾 Salvar Proposta
           </button>
-          <button id="download-docx" className="btn primary" style={{ width: '100%', marginBottom: '8px' }} onClick={onDownloadDocx}>
+          <button
+            id="download-docx"
+            className="btn primary"
+            style={{ width: "100%", marginBottom: "8px" }}
+            onClick={onDownloadDocx}>
             ⬇️ Baixar .docx
+          </button>
+          <button
+            onClick={handleCopy}
+            style={{
+              backgroundColor: colors.light.button,
+              color: colors.light.buttonText,
+              width: "100%",
+              marginBottom: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              fontWeight: "bold",
+              fontSize: "16px",
+              borderRadius: "24px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              border: "none"
+            }}
+            className="btn primary"
+          >
+            <Clipboard size={24} />
+            Copiar Proposta
           </button>
         </div>
       </div>
@@ -278,25 +330,22 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
             Nenhuma proposta salva ainda.
           </p>
         ) : (
-          <div className="proposals-list">
+          <div>
             {savedProposals.map((proposal) => {
-              // Calcular dias restantes
-              const daysRemaining = proposal.expiresAt 
-                ? Math.ceil((proposal.expiresAt - Date.now()) / (1000 * 60 * 60 * 24))
-                : null;
-              
-              const isExpiringSoon = daysRemaining && daysRemaining <= 3;
-              const isExpired = daysRemaining && daysRemaining <= 0;
-              
+              const now = Date.now();
+              const daysRemaining = proposal.expiresAt ? Math.ceil((proposal.expiresAt - now) / (1000 * 60 * 60 * 24)) : null;
+              const isExpired = proposal.expiresAt && proposal.expiresAt < now;
+              const isExpiringSoon = daysRemaining !== null && daysRemaining <= 2 && !isExpired;
               return (
-                <div key={proposal.id} className="proposal-item" style={{ 
-                  padding: '12px', 
-                  marginBottom: '8px', 
-                  border: `1px solid ${isExpiringSoon ? '#ff9800' : themeColors.sidebarBorder}`,
-                  borderRadius: '4px',
-                  backgroundColor: isExpired ? '#ffebee' : themeColors.docBg,
-                  opacity: isExpired ? 0.7 : 1
-                }}>
+                <div
+                  key={proposal.id}
+                  style={{
+                    marginBottom: '8px',
+                    border: `1px solid ${isExpiringSoon ? '#ff9800' : themeColors.sidebarBorder}`,
+                    borderRadius: '4px',
+                    backgroundColor: isExpired ? '#ffebee' : themeColors.docBg,
+                    opacity: isExpired ? 0.7 : 1
+                  }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', marginBottom: '4px' }}>{proposal.municipio}</strong>
@@ -304,22 +353,22 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
                         {proposal.data}
                       </small>
                       {daysRemaining !== null && (
-                        <small style={{ 
+                        <small style={{
                           color: isExpired ? '#c62828' : (isExpiringSoon ? '#f57c00' : '#666'),
                           fontSize: '11px',
                           display: 'block',
                           marginTop: '4px',
                           fontWeight: isExpiringSoon ? 'bold' : 'normal'
                         }}>
-                          {isExpired 
-                            ? '⚠️ Expirada' 
+                          {isExpired
+                            ? '⚠️ Expirada'
                             : `⏰ Expira em ${daysRemaining} dia${daysRemaining !== 1 ? 's' : ''}`
                           }
                         </small>
                       )}
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <button 
+                      <button
                         onClick={() => onLoadProposal(proposal)}
                         className="btn-small"
                         style={{ padding: '4px 8px', fontSize: '12px' }}
@@ -327,7 +376,7 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
                       >
                         Carregar
                       </button>
-                      <button 
+                      <button
                         onClick={() => onDeleteProposal(proposal.id)}
                         className="btn-small"
                         style={{ padding: '4px 8px', fontSize: '12px', backgroundColor: '#dc3545', color: 'white' }}
@@ -431,11 +480,6 @@ const ProposalDocument = ({ theme, options, services }) => {
 
     return `
       <div class="doc">
-        <!-- Cabeçalho -->
-        <h1 style="margin-bottom:10px;">CAVALCANTE REIS</h1>
-        <p><strong>Proponente:</strong> Cavalcante Reis Advogados</p>
-        <p><strong>Destinatário:</strong> Prefeitura Municipal de ${options.municipio || "[Nome do Município]"}</p>
-
         <!-- Sumário -->
         <div style="margin: 24px 0;">
           <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px;">Sumário</h2>
@@ -544,7 +588,40 @@ const ProposalDocument = ({ theme, options, services }) => {
 
   // Sanitizar HTML antes de renderizar
   const cleanHtml = DOMPurify.sanitize(html);
-  return <div id="preview" className="preview" dangerouslySetInnerHTML={{ __html: cleanHtml }} />;
+  return (
+    <div 
+      id="proposal-preview"
+      style={{ 
+        position: 'relative',
+        backgroundColor: themeColors.docBg, 
+        color: themeColors.docText,
+        fontFamily: 'Garamond, serif',
+        fontSize: '13px',
+        lineHeight: '1.5'
+      }}
+      className="p-12 md:p-16 lg:p-20 max-w-4xl mx-auto rounded-lg shadow-lg"
+    >
+      {/* Topo igual ao modelo */}
+      <div style={{ width: '100%', marginBottom: '48px' }}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '32px' }}>
+          <img src="/Advogados-PNG.png" alt="Logo Cavalcante Reis Advogados" style={{ height: '56px', objectFit: 'contain' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ width: '340px', textAlign: 'right' }}>
+            <hr style={{ marginBottom: '8px' }} />
+            <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>Proponente:</div>
+            <div style={{ marginBottom: '8px' }}>Cavalcante Reis Advogados</div>
+            <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>Destinatário:</div>
+            <div style={{ marginBottom: '8px' }}>Prefeitura Municipal de {options.municipio || '[Município]'}</div>
+            <hr style={{ marginBottom: '8px' }} />
+            <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>{options.data ? options.data.split('de')[2]?.trim() : '2025'}</div>
+          </div>
+        </div>
+      </div>
+      {/* Conteúdo da proposta */}
+      <div style={{ position: 'relative', zIndex: 1 }} dangerouslySetInnerHTML={{ __html: cleanHtml }} />
+    </div>
+  );
 };
 
 export default function App() {
@@ -553,7 +630,7 @@ export default function App() {
   // Modal state
   const [modal, setModal] = useState({ open: false, title: '', message: '', onConfirm: null, onCancel: null, confirmText: 'OK', cancelText: 'Cancelar', type: 'info' });
   const [theme, setTheme] = useState("light");
-  const [options, setOptions] = useState({ municipio: "Jaicós - PI", data: "07 de outubro de 2025" });
+  const [options, setOptions] = useState({ municipio: "", data: "" });
   const [services, setServices] = useState(
     Object.keys(allServices).reduce((acc, key) => {
       acc[key] = false; // começa com todos desmarcados
@@ -823,9 +900,7 @@ export default function App() {
     // Monta o HTML igual à prévia, com fonte Garamond e tamanho 13px
     return `
       <div class="doc" style="font-family: Garamond, serif; font-size: 13px; color: #222;">
-        <h1 style="margin-bottom:10px; font-family: Garamond, serif; font-size: 20px;">CAVALCANTE REIS</h1>
-        <p><strong>Proponente:</strong> Cavalcante Reis Advogados</p>
-        <p><strong>Destinatário:</strong> Prefeitura Municipal de ${options.municipio || "[Nome do Município]"}</p>
+  {/* Removido bloco duplicado de cabeçalho, já existe acima como watermark/header */}
         <div style="margin: 24px 0;">
           <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">Sumário</h2>
           <ol style="margin-top:8px; padding-left: 20px;">
@@ -854,11 +929,11 @@ export default function App() {
           </table>
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
-          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">2. Análise da Questão</h2>
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; fontSize: 15px;">2. Análise da Questão</h2>
           ${Object.entries(allServices).map(([key, label]) => services[key] ? `<h3 class="font-bold text-lg mt-6 mb-2" style="font-family: Garamond, serif; font-size: 14px;">${serviceTitles[key]}</h3><div class="space-y-4">${serviceTextDatabase[key]}</div>` : "").join("")}
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
-          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">3. Dos Honorários, das Condições de Pagamento e Despesas</h2>
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; fontSize: 15px;">3. Dos Honorários, das Condições de Pagamento e Despesas</h2>
           <p>Os valores levantados a título de incremento são provisórios, baseados em informações preliminares, podendo, ao final, representar valores a maior ou a menor.</p>
           <ul style="margin-top:8px; padding-left:20px; list-style:disc; font-family: Garamond, serif; font-size: 13px;">
             <li><strong>3.1.1</strong> Para todos os demais itens descritos nesta Proposta será efetuado o pagamento de honorários advocatícios à CAVALCANTE REIS ADVOGADOS pela execução dos serviços de recuperação de créditos, ad êxito na ordem de R$ 0,12 para cada R$ 1,00.</li>
@@ -867,15 +942,15 @@ export default function App() {
           </ul>
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
-          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">4. Prazo e Cronograma de Execução dos Serviços</h2>
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; fontSize: 15px;">4. Prazo e Cronograma de Execução dos Serviços</h2>
           <p>O prazo de execução será de 24 (vinte e quatro) meses ou pelo tempo que perdurar os processos judiciais, podendo ser prorrogado por interesse das partes.</p>
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
-          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">5. Experiência e Equipe Responsável</h2>
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; fontSize: 15px;">5. Experiência e Equipe Responsável</h2>
           <p>No portfólio de serviços executados e/ou em execução, constam diversos Municípios contratantes.</p>
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
-          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">6. Disposições Finais</h2>
+          <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; fontSize: 15px;">6. Disposições Finais</h2>
           <div style="margin-top:16px; border-top:1px solid #ddd; padding-top:16px; text-align:center; font-family: Garamond, serif; font-size: 13px;">
             <p>Brasília-DF, ${options.data || "[Data da Proposta]"}.</p>
             <p style="margin-top:12px; font-weight:bold;">Atenciosamente,</p>
@@ -888,32 +963,72 @@ export default function App() {
 
   // Função para gerar docx igual à prévia
   const generateDocx = async () => {
-    // Usa o HTML da prévia para montar o texto
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = proposalHtmlForCopy;
-    const cleanText = tempDiv.innerText;
-    const doc = new Document({
-      styles: {
-        paragraphStyles: [
-          {
-            id: "Normal",
-            name: "Normal",
-            run: {
-              font: "Garamond",
-              size: 26, // 13pt (docx usa metade do valor em twips)
-              color: "222222"
+    try {
+      // Validação básica
+      if (!options.municipio) {
+        setModal({
+          open: true,
+          title: 'Erro ao gerar documento',
+          message: 'Por favor, preencha o nome do município antes de gerar o documento.',
+          confirmText: 'OK',
+          type: 'error',
+          onConfirm: () => setModal(m => ({ ...m, open: false })),
+        });
+        return;
+      }
+
+      // Usa o HTML da prévia para montar o texto
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = proposalHtmlForCopy;
+      const cleanText = tempDiv.innerText;
+      
+      // Criar o documento com as configurações corretas
+      const doc = new Document({
+        styles: {
+          paragraphStyles: [
+            {
+              id: "Normal",
+              name: "Normal",
+              run: {
+                font: "Garamond",
+                size: 26, // 13pt (docx usa metade do valor em twips)
+                color: "222222"
+              },
+              paragraph: {
+                spacing: { after: 120 },
+              },
             },
-            paragraph: {
-              spacing: { after: 120 },
-            },
-          },
-        ],
-      },
-    });
-    doc.addSection({ children: [new Paragraph({ text: cleanText, style: "Normal" })] });
-    const packer = new Packer();
-    const blob = await packer.toBlob(doc);
-    saveAs(blob, `Proposta - ${options.municipio || "Municipio"}.docx`);
+          ],
+        },
+        sections: [{
+          properties: {},
+          children: [new Paragraph({ text: cleanText, style: "Normal" })],
+        }],
+      });
+
+      const blob = await Packer.toBlob(doc);
+      saveAs(blob, `Proposta - ${options.municipio || "Municipio"}.docx`);
+      
+      // Mostrar mensagem de sucesso
+      setModal({
+        open: true,
+        title: 'Documento gerado!',
+        message: `O documento "Proposta - ${options.municipio}.docx" foi baixado com sucesso.`,
+        confirmText: 'OK',
+        type: 'success',
+        onConfirm: () => setModal(m => ({ ...m, open: false })),
+      });
+    } catch (error) {
+      console.error('Erro ao gerar documento:', error);
+      setModal({
+        open: true,
+        title: 'Erro ao gerar documento',
+        message: `Ocorreu um erro ao gerar o documento: ${error.message}`,
+        confirmText: 'OK',
+        type: 'error',
+        onConfirm: () => setModal(m => ({ ...m, open: false })),
+      });
+    }
   };
 
   // Processar upload de .docx: substituir município, data e remover seções 2.2-2.8
@@ -983,6 +1098,7 @@ export default function App() {
   // Handler para download e salvar, passado para o sidebar
   const onDownloadDocx = generateDocx;
   const onSaveProposal = saveProposal;
+  const [showCopyToast, setShowCopyToast] = useState(false);
   React.useEffect(() => {
     const upload = document.getElementById("upload-docx");
     if (upload) {
@@ -995,6 +1111,23 @@ export default function App() {
 
   return (
     <div className={`app ${theme}`} style={{ backgroundColor: colors[theme].background }}>
+      {showCopyToast && (
+        <div style={{
+          position: 'fixed',
+          top: '32px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: '#333',
+          color: '#fff',
+          padding: '12px 32px',
+          borderRadius: '24px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          zIndex: 9999,
+          fontSize: '16px',
+        }}>
+          Prévia copiada!
+        </div>
+      )}
       <Header theme={theme} />
       <main className="main">
         <ControlsSidebar
@@ -1003,17 +1136,18 @@ export default function App() {
           setOptions={setOptions}
           services={services}
           setServices={setServices}
-          savedProposals={savedProposals || []}
+          savedProposals={Array.isArray(savedProposals) ? savedProposals : []}
           onLoadProposal={loadProposal}
           onDeleteProposal={deleteProposal}
           onStartFromScratch={startFromScratch}
           onImportDocx={importDocx}
           onSaveProposal={saveProposal}
           onDownloadDocx={generateDocx}
+          proposalHtmlForCopy={proposalHtmlForCopy}
+          setShowCopyToast={setShowCopyToast}
         />
         <div className="content">
           <ProposalDocument theme={theme} options={options} services={services} />
-          <CopyButton theme={theme} textToCopy={proposalHtmlForCopy} />
         </div>
         <Modal {...modal} />
       </main>
