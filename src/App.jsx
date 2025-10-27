@@ -9,10 +9,10 @@ import { Document, Packer, Paragraph, TextRun } from "docx";
 // Paleta baseada nas imagens enviadas
 const colors = {
   light: {
-    background: "#eff0f3",     // Background (light image)
-    headline: "#0d0d0d",      // Headline / strong text
-    paragraph: "#2a2a2a",     // Paragraph / body text
-    button: "#ff8e3c",        // Button (sun color)
+    background: "#eff0f3", // Background (light image)
+    headline: "#0d0d0d", // Headline / strong text
+    paragraph: "#2a2a2a", // Paragraph / body text
+    button: "#ff8e3c", // Button (sun color)
     buttonText: "#0d0d0d",
     stroke: "#0d0d0d",
     main: "#eff0f3",
@@ -23,22 +23,6 @@ const colors = {
     docText: "#000000",
     sidebarBg: "#ffffff",
     sidebarBorder: "#0d0d0d",
-  },
-  dark: {
-    background: "#0f0e17",    // Background (dark image)
-    headline: "#ffffff",
-    paragraph: "#a7a9be",
-    button: "#ff8906",
-    buttonText: "#ffffff",
-    stroke: "#000000",
-    main: "#ffffff",
-    highlight: "#ff8906",
-    secondary: "#f25f4c",
-    tertiary: "#e53170",
-    docBg: "#0f0e17",
-    docText: "#ffffff",
-    sidebarBg: "#0f0e17",
-    sidebarBorder: "#000000",
   },
 };
 
@@ -148,7 +132,20 @@ const Header = ({ theme }) => (
   </header>
 );
 
-const ControlsSidebar = ({ theme, options, setOptions, services, setServices, savedProposals, onLoadProposal, onDeleteProposal, onStartFromScratch, onImportDocx, onSaveProposal, onDownloadDocx }) => {
+const ControlsSidebar = ({
+  theme,
+  options,
+  setOptions,
+  services,
+  setServices,
+  savedProposals,
+  onLoadProposal,
+  onDeleteProposal,
+  onStartFromScratch,
+  onImportDocx,
+  onSaveProposal,
+  onDownloadDocx,
+}) => {
   const themeColors = colors[theme];
 
   const handleServiceChange = (serviceName) => {
@@ -159,8 +156,8 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
     const { name, value } = e.target;
     // Sanitizar entrada para prevenir XSS
     const sanitizedValue = value
-      .replace(/<script[^>]*>.*?<\/script>/gi, '') // Remove scripts
-      .replace(/<[^>]+>/g, '') // Remove tags HTML
+      .replace(/<script[^>]*>.*?<\/script>/gi, "") // Remove scripts
+      .replace(/<[^>]+>/g, "") // Remove tags HTML
       .trim();
     setOptions((prev) => ({ ...prev, [name]: sanitizedValue }));
   };
@@ -175,36 +172,34 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
       </div>
 
       {/* Botões de Início */}
-      <div className="start-buttons" style={{ marginTop: '16px', marginBottom: '16px' }}>
-          <button 
-            onClick={onStartFromScratch}
-            className="btn" 
-            style={{ 
-              width: '100%', 
-              marginBottom: '8px',
-              background: 'var(--button)',
-              color: 'var(--button-text)'
-            }}
-          >
-            Começar do Zero
-          </button>
-        <button 
-          onClick={() => document.getElementById('import-docx-input').click()}
-          className="btn" 
-          style={{ 
-            width: '100%',
-            background: 'var(--surface)',
-            border: '2px solid var(--button)',
-            color: 'var(--headline)'
-          }}
-        >
+      <div className="start-buttons" style={{ marginTop: "16px", marginBottom: "16px" }}>
+        <button
+          onClick={onStartFromScratch}
+          className="btn"
+          style={{
+            width: "100%",
+            marginBottom: "8px",
+            background: "var(--button)",
+            color: "var(--button-text)",
+          }}>
+          Começar do Zero
+        </button>
+        <button
+          onClick={() => document.getElementById("import-docx-input").click()}
+          className="btn"
+          style={{
+            width: "100%",
+            background: "var(--surface)",
+            border: "2px solid var(--button)",
+            color: "var(--headline)",
+          }}>
           📄 Importar .docx Modelo
         </button>
-        <input 
-          id="import-docx-input" 
-          type="file" 
-          accept=".docx" 
-          style={{ display: 'none' }}
+        <input
+          id="import-docx-input"
+          type="file"
+          accept=".docx"
+          style={{ display: "none" }}
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) onImportDocx(file);
@@ -216,9 +211,9 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
 
       <div className="field">
         <label>Município Destinatário</label>
-        <input 
-          name="municipio" 
-          value={options.municipio} 
+        <input
+          name="municipio"
+          value={options.municipio}
           onChange={handleOptionChange}
           maxLength={100}
           placeholder="Nome do Município"
@@ -227,9 +222,9 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
 
       <div className="field">
         <label>Data da Proposta</label>
-        <input 
-          name="data" 
-          value={options.data} 
+        <input
+          name="data"
+          value={options.data}
           onChange={handleOptionChange}
           maxLength={50}
           placeholder="DD de mês de AAAA"
@@ -241,13 +236,33 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
       <h3>Serviços (Seções)</h3>
 
       {/* Botões Selecionar/Desmarcar Todos */}
-      <div style={{ display: 'flex', gap: '8px', margin: '16px 0' }}>
-        <button className="btn" style={{ flex: 1, background: 'var(--button)', color: 'var(--button-text)' }}
-          onClick={() => setServices(Object.keys(allServices).reduce((acc, key) => { acc[key] = true; return acc; }, {}))}
-        >Selecionar Todos</button>
-        <button className="btn" style={{ flex: 1, background: 'var(--surface)', border: '2px solid var(--stroke)', color: 'var(--headline)' }}
-          onClick={() => setServices(Object.keys(allServices).reduce((acc, key) => { acc[key] = false; return acc; }, {}))}
-        >Desmarcar Todos</button>
+      <div style={{ display: "flex", gap: "8px", margin: "16px 0" }}>
+        <button
+          className="btn"
+          style={{ flex: 1, background: "var(--button)", color: "var(--button-text)" }}
+          onClick={() =>
+            setServices(
+              Object.keys(allServices).reduce((acc, key) => {
+                acc[key] = true;
+                return acc;
+              }, {})
+            )
+          }>
+          Selecionar Todos
+        </button>
+        <button
+          className="btn"
+          style={{ flex: 1, background: "var(--surface)", border: "2px solid var(--stroke)", color: "var(--headline)" }}
+          onClick={() =>
+            setServices(
+              Object.keys(allServices).reduce((acc, key) => {
+                acc[key] = false;
+                return acc;
+              }, {})
+            )
+          }>
+          Desmarcar Todos
+        </button>
       </div>
 
       <div className="services">
@@ -259,79 +274,88 @@ const ControlsSidebar = ({ theme, options, setOptions, services, setServices, sa
         ))}
 
         <div className="actions">
-          <button id="save-proposal" className="btn primary" style={{ width: '100%', marginBottom: '8px' }} onClick={onSaveProposal}>
+          <button
+            id="save-proposal"
+            className="btn primary"
+            style={{ width: "100%", marginBottom: "8px" }}
+            onClick={onSaveProposal}>
             💾 Salvar Proposta
           </button>
-          <button id="download-docx" className="btn primary" style={{ width: '100%', marginBottom: '8px' }} onClick={onDownloadDocx}>
+          <button
+            id="download-docx"
+            className="btn primary"
+            style={{ width: "100%", marginBottom: "8px" }}
+            onClick={onDownloadDocx}>
             ⬇️ Baixar .docx
           </button>
         </div>
       </div>
 
-      <hr style={{ margin: '24px 0' }} />
+      <hr style={{ margin: "24px 0" }} />
 
       {/* Propostas Salvas */}
       <div className="saved-proposals">
         <h3>Propostas Salvas</h3>
         {savedProposals.length === 0 ? (
-          <p style={{ color: themeColors.paragraph, fontSize: '14px', fontStyle: 'italic' }}>
+          <p style={{ color: themeColors.paragraph, fontSize: "14px", fontStyle: "italic" }}>
             Nenhuma proposta salva ainda.
           </p>
         ) : (
           <div className="proposals-list">
             {savedProposals.map((proposal) => {
               // Calcular dias restantes
-              const daysRemaining = proposal.expiresAt 
+              const daysRemaining = proposal.expiresAt
                 ? Math.ceil((proposal.expiresAt - Date.now()) / (1000 * 60 * 60 * 24))
                 : null;
-              
+
               const isExpiringSoon = daysRemaining && daysRemaining <= 3;
               const isExpired = daysRemaining && daysRemaining <= 0;
-              
+
               return (
-                <div key={proposal.id} className="proposal-item" style={{ 
-                  padding: '12px', 
-                  marginBottom: '8px', 
-                  border: `1px solid ${isExpiringSoon ? '#ff9800' : themeColors.sidebarBorder}`,
-                  borderRadius: '4px',
-                  backgroundColor: isExpired ? '#ffebee' : themeColors.docBg,
-                  opacity: isExpired ? 0.7 : 1
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div
+                  key={proposal.id}
+                  className="proposal-item"
+                  style={{
+                    padding: "12px",
+                    marginBottom: "8px",
+                    border: `1px solid ${isExpiringSoon ? "#ff9800" : themeColors.sidebarBorder}`,
+                    borderRadius: "4px",
+                    backgroundColor: isExpired ? "#ffebee" : themeColors.docBg,
+                    opacity: isExpired ? 0.7 : 1,
+                  }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div style={{ flex: 1 }}>
-                      <strong style={{ display: 'block', marginBottom: '4px' }}>{proposal.municipio}</strong>
-                      <small style={{ color: themeColors.paragraph, fontSize: '12px', display: 'block' }}>
+                      <strong style={{ display: "block", marginBottom: "4px" }}>{proposal.municipio}</strong>
+                      <small style={{ color: themeColors.paragraph, fontSize: "12px", display: "block" }}>
                         {proposal.data}
                       </small>
                       {daysRemaining !== null && (
-                        <small style={{ 
-                          color: isExpired ? '#c62828' : (isExpiringSoon ? '#f57c00' : '#666'),
-                          fontSize: '11px',
-                          display: 'block',
-                          marginTop: '4px',
-                          fontWeight: isExpiringSoon ? 'bold' : 'normal'
-                        }}>
-                          {isExpired 
-                            ? '⚠️ Expirada' 
-                            : `⏰ Expira em ${daysRemaining} dia${daysRemaining !== 1 ? 's' : ''}`
-                          }
+                        <small
+                          style={{
+                            color: isExpired ? "#c62828" : isExpiringSoon ? "#f57c00" : "#666",
+                            fontSize: "11px",
+                            display: "block",
+                            marginTop: "4px",
+                            fontWeight: isExpiringSoon ? "bold" : "normal",
+                          }}>
+                          {isExpired
+                            ? "⚠️ Expirada"
+                            : `⏰ Expira em ${daysRemaining} dia${daysRemaining !== 1 ? "s" : ""}`}
                         </small>
                       )}
                     </div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button 
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
                         onClick={() => onLoadProposal(proposal)}
                         className="btn-small"
-                        style={{ padding: '4px 8px', fontSize: '12px' }}
-                        disabled={isExpired}
-                      >
+                        style={{ padding: "4px 8px", fontSize: "12px" }}
+                        disabled={isExpired}>
                         Carregar
                       </button>
-                      <button 
+                      <button
                         onClick={() => onDeleteProposal(proposal.id)}
                         className="btn-small"
-                        style={{ padding: '4px 8px', fontSize: '12px', backgroundColor: '#dc3545', color: 'white' }}
-                      >
+                        style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#dc3545", color: "white" }}>
                         Excluir
                       </button>
                     </div>
@@ -383,6 +407,7 @@ const ProposalDocument = ({ theme, options, services }) => {
     const renderService = (serviceKey, title, content) => {
       if (!services[serviceKey]) return "";
       return `
+        <hr style="border:2px solid #000; margin:24px 0;">
         <h3 class="font-bold text-lg mt-6 mb-2">${title}</h3>
         <div class="space-y-4">${content}</div>
       `;
@@ -392,9 +417,9 @@ const ProposalDocument = ({ theme, options, services }) => {
     const renderTableObjetosRow = (serviceKey, tese, cabimento) => {
       if (!services[serviceKey]) return "";
       return `
-        <tr class="border-b">
-          <td class="p-2 align-top">${tese}</td>
-          <td class="p-2 align-top">${cabimento}</td>
+        <tr style="height: 40px; vertical-align: top; border-bottom:4px solid #000;">
+          <td class="p-2 align-top" style="padding-top: 12px; padding-bottom: 12px;">${tese}</td>
+          <td class="p-2 align-top" style="padding-top: 12px; padding-bottom: 12px;">${cabimento}</td>
         </tr>
       `;
     };
@@ -431,10 +456,16 @@ const ProposalDocument = ({ theme, options, services }) => {
 
     return `
       <div class="doc">
-        <!-- Cabeçalho -->
-        <h1 style="margin-bottom:10px;">CAVALCANTE REIS</h1>
-        <p><strong>Proponente:</strong> Cavalcante Reis Advogados</p>
-        <p><strong>Destinatário:</strong> Prefeitura Municipal de ${options.municipio || "[Nome do Município]"}</p>
+        <!-- Cabeçalho com logo -->
+        <div style="text-align:center; margin-bottom:24px;">
+          <img src="/logo-cavalcante-reis.png" alt="Logo Cavalcante Reis Advogados" style="max-width:300px; max-height:100px; display:block; margin:0 auto;" />
+        </div>
+        <!-- Bloco à direita -->
+        <div style="text-align:right; margin-bottom:32px;">
+          <p><strong>Proponente:</strong> Cavalcante Reis Advogados</p>
+          <p><strong>Destinatário:</strong> Prefeitura Municipal de ${options.municipio || "[Nome do Município]"}</p>
+          <p>${options.data || "[Data da Proposta]"}</p>
+        </div>
 
         <!-- Sumário -->
         <div style="margin: 24px 0;">
@@ -454,36 +485,70 @@ const ProposalDocument = ({ theme, options, services }) => {
           <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px;">1. Objeto da Proposta</h2>
           <p style="margin: 8px 0;">
             É objeto do presente contrato o desenvolvimento de serviços advocatícios especializados por parte da Proponente,
-            Cavalcante Reis Advogados, ao Aceitante, Município de ${options.municipio || "[Nome do Município]"}, a fim de prestação de serviços de
+            Cavalcante Reis Advogados, ao Aceitante, Município de ${
+              options.municipio || "[Nome do Município]"
+            }, a fim de prestação de serviços de
             assessoria técnica e jurídica nas áreas de Direito Público, Tributário, Econômico, Financeiro, Minerário e Previdenciário,
             atuando perante o Ministério da Fazenda e os seus órgãos administrativos, em especial para alcançar o incremento de receitas,
             ficando responsável pelo ajuizamento, acompanhamento e eventuais intervenções de terceiro em ações de interesse do Município.
           </p>
           <p class="mb-4">A proposta inclui os seguintes objetos:</p>
 
-          <table class="w-full border-collapse border mb-4" style="width:100%; border:1px solid #ddd;">
-            <thead>
-              <tr style="background:#f7f7f7; text-align:left;">
-                <th class="p-2 border-r" style="padding:8px; border-right:1px solid #ddd;">TESE</th>
-                <th class="p-2" style="padding:8px;">CABIMENTO / PERSPECTIVA</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${renderTableObjetosRow("folhaPagamento","Folha de pagamento, recuperação de verbas indenizatórias e contribuições previdenciárias (INSS)","A perspectiva de incremento/recuperação é de aproximadamente o valor referente a até duas folhas de pagamento mensais.")}
-              ${renderTableObjetosRow("pasep","Recuperação/ compensação PASEP","Cabível")}
-              ${renderTableObjetosRow("rpps","RPPS Regime Próprio de Previdência Social","Cabível")}
-              ${renderTableObjetosRow("impostoRenda","Recuperação/Compensação de Imposto de Renda","Cabível")}
-              ${renderTableObjetosRow("cfem","Compensação financeira pela exploração de recursos minerais – CFEM","Cabível")}
-              ${renderTableObjetosRow("cfurh","Compensação Financeira pela Utilização dos Recursos Hídricos – CFURH","Cabível")}
-              ${renderTableObjetosRow("tabelaSUS","Tabela SUS","Cabível")}
-              ${renderTableObjetosRow("fundef","FUNDEF - Atuação em feito para agilizar a tramitação.","Cabível")}
-              ${renderTableObjetosRow("fundeb","Recuperação dos valores repassados à menor a título de FUNDEB.","Cabível")}
-              ${renderTableObjetosRow("energiaEletrica","Auditoria e Consultoria do pagamento de Energia Elétrica","Cabível")}
-              ${renderTableObjetosRow("royaltiesOleoGas","Royalties pela exploração de óleo bruto, xisto betuminoso e gás natural.","Cabível")}
-              ${renderTableObjetosRow("repassesFPM","Repasses dos recursos de FPM com base na real e efetiva arrecadação do IPI e IR.","Cabível")}
-              ${renderTableObjetosRow("revisaoParcelamento","Revisão dos parcelamentos previdenciários","Cabível")}
-              ${renderTableObjetosRow("issqn","Recuperação de Créditos de ISSQN","Cabível")}
-              ${renderTableObjetosRow("servicosTecnicos","Serviços técnicos especializados de assessoria e consultoria jurídica (DF)","Cabível")}
+            <table class="w-full border-collapse border mb-4" style="width:100%; border:1px solid #000;">
+              <thead>
+                <tr style="background:#f7f7f7; text-align:left;">
+                  <th class="p-2 border-r" style="padding:8px; border-right:2px solid #000;">TESE</th>
+                  <th class="p-2" style="padding:8px;">CABIMENTO / PERSPECTIVA</th>
+                </tr>
+              </thead>
+              <tbody>
+              ${renderTableObjetosRow(
+                "folhaPagamento",
+                "Folha de pagamento, recuperação de verbas indenizatórias e contribuições previdenciárias (INSS)",
+                "A perspectiva de incremento/recuperação é de aproximadamente o valor referente a até duas folhas de pagamento mensais."
+              )}
+              ${renderTableObjetosRow("pasep", "Recuperação/ compensação PASEP", "Cabível")}
+              ${renderTableObjetosRow("rpps", "RPPS Regime Próprio de Previdência Social", "Cabível")}
+              ${renderTableObjetosRow("impostoRenda", "Recuperação/Compensação de Imposto de Renda", "Cabível")}
+              ${renderTableObjetosRow(
+                "cfem",
+                "Compensação financeira pela exploração de recursos minerais – CFEM",
+                "Cabível"
+              )}
+              ${renderTableObjetosRow(
+                "cfurh",
+                "Compensação Financeira pela Utilização dos Recursos Hídricos – CFURH",
+                "Cabível"
+              )}
+              ${renderTableObjetosRow("tabelaSUS", "Tabela SUS", "Cabível")}
+              ${renderTableObjetosRow("fundef", "FUNDEF - Atuação em feito para agilizar a tramitação.", "Cabível")}
+              ${renderTableObjetosRow(
+                "fundeb",
+                "Recuperação dos valores repassados à menor a título de FUNDEB.",
+                "Cabível"
+              )}
+              ${renderTableObjetosRow(
+                "energiaEletrica",
+                "Auditoria e Consultoria do pagamento de Energia Elétrica",
+                "Cabível"
+              )}
+              ${renderTableObjetosRow(
+                "royaltiesOleoGas",
+                "Royalties pela exploração de óleo bruto, xisto betuminoso e gás natural.",
+                "Cabível"
+              )}
+              ${renderTableObjetosRow(
+                "repassesFPM",
+                "Repasses dos recursos de FPM com base na real e efetiva arrecadação do IPI e IR.",
+                "Cabível"
+              )}
+              ${renderTableObjetosRow("revisaoParcelamento", "Revisão dos parcelamentos previdenciários", "Cabível")}
+              ${renderTableObjetosRow("issqn", "Recuperação de Créditos de ISSQN", "Cabível")}
+              ${renderTableObjetosRow(
+                "servicosTecnicos",
+                "Serviços técnicos especializados de assessoria e consultoria jurídica (DF)",
+                "Cabível"
+              )}
             </tbody>
           </table>
         </div>
@@ -503,7 +568,11 @@ const ProposalDocument = ({ theme, options, services }) => {
           ${renderService("energiaEletrica", serviceTitles.energiaEletrica, serviceTextDatabase.energiaEletrica)}
           ${renderService("royaltiesOleoGas", serviceTitles.royaltiesOleoGas, serviceTextDatabase.royaltiesOleoGas)}
           ${renderService("repassesFPM", serviceTitles.repassesFPM, serviceTextDatabase.repassesFPM)}
-          ${renderService("revisaoParcelamento", serviceTitles.revisaoParcelamento, serviceTextDatabase.revisaoParcelamento)}
+          ${renderService(
+            "revisaoParcelamento",
+            serviceTitles.revisaoParcelamento,
+            serviceTextDatabase.revisaoParcelamento
+          )}
           ${renderService("issqn", serviceTitles.issqn, serviceTextDatabase.issqn)}
           ${renderService("servicosTecnicos", serviceTitles.servicosTecnicos, serviceTextDatabase.servicosTecnicos)}
         </div>
@@ -551,9 +620,18 @@ export default function App() {
   // Função para começar do zero
   // (removida duplicidade, usar apenas a versão do modal abaixo)
   // Modal state
-  const [modal, setModal] = useState({ open: false, title: '', message: '', onConfirm: null, onCancel: null, confirmText: 'OK', cancelText: 'Cancelar', type: 'info' });
+  const [modal, setModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+    onCancel: null,
+    confirmText: "OK",
+    cancelText: "Cancelar",
+    type: "info",
+  });
   const [theme, setTheme] = useState("light");
-  const [options, setOptions] = useState({ municipio: "Jaicós - PI", data: "07 de outubro de 2025" });
+  const [options, setOptions] = useState({ municipio: "", data: "" });
   const [services, setServices] = useState(
     Object.keys(allServices).reduce((acc, key) => {
       acc[key] = false; // começa com todos desmarcados
@@ -565,7 +643,7 @@ export default function App() {
   // Função para limpar propostas expiradas
   const cleanExpiredProposals = (proposals) => {
     const now = Date.now();
-    return proposals.filter(p => {
+    return proposals.filter((p) => {
       // Se a proposta não tem expiresAt (propostas antigas), manter por compatibilidade
       if (!p.expiresAt) return true;
       return p.expiresAt > now;
@@ -574,17 +652,19 @@ export default function App() {
 
   // Carregar propostas salvas do localStorage ao iniciar e limpar expiradas
   React.useEffect(() => {
-    const saved = localStorage.getItem('savedProposals');
+    const saved = localStorage.getItem("savedProposals");
     if (saved) {
       const allProposals = JSON.parse(saved);
       const validProposals = cleanExpiredProposals(allProposals);
-      
+
       // Se alguma proposta foi removida, atualizar localStorage
       if (validProposals.length !== allProposals.length) {
-        localStorage.setItem('savedProposals', JSON.stringify(validProposals));
-        console.log(`${allProposals.length - validProposals.length} proposta(s) expirada(s) foi(ram) deletada(s) automaticamente.`);
+        localStorage.setItem("savedProposals", JSON.stringify(validProposals));
+        console.log(
+          `${allProposals.length - validProposals.length} proposta(s) expirada(s) foi(ram) deletada(s) automaticamente.`
+        );
       }
-      
+
       setSavedProposals(validProposals);
     }
   }, []);
@@ -593,11 +673,11 @@ export default function App() {
   const startFromScratch = () => {
     setModal({
       open: true,
-      title: 'Nova Proposta',
-      message: 'Deseja começar uma nova proposta do zero? Todos os dados não salvos serão perdidos.',
-      confirmText: 'Começar',
-      cancelText: 'Cancelar',
-      type: 'warning',
+      title: "Nova Proposta",
+      message: "Deseja começar uma nova proposta do zero? Todos os dados não salvos serão perdidos.",
+      confirmText: "Começar",
+      cancelText: "Cancelar",
+      type: "warning",
       onConfirm: () => {
         setOptions({ municipio: "", destinatario: "", data: "" }); // limpa todos os campos
         setServices(
@@ -608,7 +688,7 @@ export default function App() {
         );
         setModal({ ...modal, open: false });
       },
-      onCancel: () => setModal({ ...modal, open: false })
+      onCancel: () => setModal({ ...modal, open: false }),
     });
   };
 
@@ -616,31 +696,36 @@ export default function App() {
   const validateDocxFile = (file) => {
     const MAX_SIZE = 10 * 1024 * 1024; // 10MB
     const ALLOWED_TYPES = [
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/msword'
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/msword",
     ];
-    const ALLOWED_EXTENSIONS = ['.docx', '.doc'];
+    const ALLOWED_EXTENSIONS = [".docx", ".doc"];
 
     // Validar se arquivo existe
     if (!file) {
-      return { valid: false, error: 'Nenhum arquivo selecionado.' };
+      return { valid: false, error: "Nenhum arquivo selecionado." };
     }
 
     // Validar tamanho
     if (file.size > MAX_SIZE) {
-      return { valid: false, error: `Arquivo muito grande. Tamanho máximo: 10MB. Tamanho do arquivo: ${(file.size / 1024 / 1024).toFixed(2)}MB` };
+      return {
+        valid: false,
+        error: `Arquivo muito grande. Tamanho máximo: 10MB. Tamanho do arquivo: ${(file.size / 1024 / 1024).toFixed(
+          2
+        )}MB`,
+      };
     }
 
     // Validar extensão
     const fileName = file.name.toLowerCase();
-    const hasValidExtension = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
+    const hasValidExtension = ALLOWED_EXTENSIONS.some((ext) => fileName.endsWith(ext));
     if (!hasValidExtension) {
-      return { valid: false, error: 'Formato inválido. Use apenas arquivos .docx ou .doc' };
+      return { valid: false, error: "Formato inválido. Use apenas arquivos .docx ou .doc" };
     }
 
     // Validar tipo MIME
     if (file.type && !ALLOWED_TYPES.includes(file.type)) {
-      return { valid: false, error: 'Tipo de arquivo inválido. Use apenas documentos Word.' };
+      return { valid: false, error: "Tipo de arquivo inválido. Use apenas documentos Word." };
     }
 
     return { valid: true };
@@ -653,11 +738,11 @@ export default function App() {
     if (!validation.valid) {
       setModal({
         open: true,
-        title: 'Arquivo inválido',
+        title: "Arquivo inválido",
         message: validation.error,
-        confirmText: 'OK',
-        type: 'error',
-        onConfirm: () => setModal(m => ({ ...m, open: false })),
+        confirmText: "OK",
+        type: "error",
+        onConfirm: () => setModal((m) => ({ ...m, open: false })),
       });
       return;
     }
@@ -670,18 +755,18 @@ export default function App() {
       // Extrair município do texto
       const municipioMatch = text.match(/Município de ([^,\n]+)/i) || text.match(/Prefeitura Municipal de ([^,\n]+)/i);
       if (municipioMatch) {
-        setOptions(prev => ({ ...prev, municipio: municipioMatch[1].trim() }));
+        setOptions((prev) => ({ ...prev, municipio: municipioMatch[1].trim() }));
       }
 
       // Extrair data do texto
       const dataMatch = text.match(/(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/);
       if (dataMatch) {
-        setOptions(prev => ({ ...prev, data: dataMatch[0] }));
+        setOptions((prev) => ({ ...prev, data: dataMatch[0] }));
       }
 
       // Detectar quais serviços estão no documento
       const newServices = {};
-      Object.keys(allServices).forEach(key => {
+      Object.keys(allServices).forEach((key) => {
         // Verifica se o serviço aparece no texto
         const serviceName = allServices[key].toLowerCase();
         newServices[key] = text.toLowerCase().includes(serviceName.substring(0, 15));
@@ -690,21 +775,21 @@ export default function App() {
 
       setModal({
         open: true,
-        title: 'Importação concluída',
-        message: 'Documento importado com sucesso! Os campos foram preenchidos automaticamente.',
-        confirmText: 'OK',
-        type: 'success',
-        onConfirm: () => setModal(m => ({ ...m, open: false })),
+        title: "Importação concluída",
+        message: "Documento importado com sucesso! Os campos foram preenchidos automaticamente.",
+        confirmText: "OK",
+        type: "success",
+        onConfirm: () => setModal((m) => ({ ...m, open: false })),
       });
     } catch (err) {
       console.error("Erro ao importar .docx:", err);
       setModal({
         open: true,
-        title: 'Erro ao importar',
-        message: 'Erro ao importar documento. Verifique se o arquivo é válido.',
-        confirmText: 'OK',
-        type: 'error',
-        onConfirm: () => setModal(m => ({ ...m, open: false })),
+        title: "Erro ao importar",
+        message: "Erro ao importar documento. Verifique se o arquivo é válido.",
+        confirmText: "OK",
+        type: "error",
+        onConfirm: () => setModal((m) => ({ ...m, open: false })),
       });
     }
   };
@@ -712,35 +797,39 @@ export default function App() {
   // Salvar proposta atual
   const saveProposal = () => {
     const now = Date.now();
-    const expiresAt = now + (14 * 24 * 60 * 60 * 1000); // 14 dias em milissegundos
-    
+    const expiresAt = now + 14 * 24 * 60 * 60 * 1000; // 14 dias em milissegundos
+
     const newProposal = {
       id: now,
       municipio: options.municipio,
       data: options.data,
-      timestamp: new Date().toLocaleString('pt-BR'),
+      timestamp: new Date().toLocaleString("pt-BR"),
       createdAt: now,
       expiresAt: expiresAt,
       services: { ...services },
-      options: { ...options }
+      options: { ...options },
     };
-    
+
     // Filtrar propostas expiradas antes de salvar
-    const validProposals = savedProposals.filter(p => p.expiresAt > now);
+    const validProposals = savedProposals.filter((p) => p.expiresAt > now);
     const updated = [...validProposals, newProposal];
-    
+
     setSavedProposals(updated);
-    localStorage.setItem('savedProposals', JSON.stringify(updated));
-    
+    localStorage.setItem("savedProposals", JSON.stringify(updated));
+
     const daysRemaining = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
-    
+
     setModal({
       open: true,
-      title: 'Proposta Salva',
-      message: `Proposta para ${options.municipio} salva com sucesso!\n\nEsta proposta será automaticamente deletada em ${daysRemaining} dias (${new Date(expiresAt).toLocaleDateString('pt-BR')}).`,
-      confirmText: 'OK',
-      type: 'success',
-      onConfirm: () => setModal(m => ({ ...m, open: false })),
+      title: "Proposta Salva",
+      message: `Proposta para ${
+        options.municipio
+      } salva com sucesso!\n\nEsta proposta será automaticamente deletada em ${daysRemaining} dias (${new Date(
+        expiresAt
+      ).toLocaleDateString("pt-BR")}).`,
+      confirmText: "OK",
+      type: "success",
+      onConfirm: () => setModal((m) => ({ ...m, open: false })),
     });
   };
 
@@ -750,21 +839,21 @@ export default function App() {
     if (proposal.expiresAt && proposal.expiresAt < Date.now()) {
       setModal({
         open: true,
-        title: 'Proposta Expirada',
-        message: 'Esta proposta expirou e será deletada automaticamente. Por favor, selecione outra proposta.',
-        confirmText: 'OK',
-        type: 'error',
+        title: "Proposta Expirada",
+        message: "Esta proposta expirou e será deletada automaticamente. Por favor, selecione outra proposta.",
+        confirmText: "OK",
+        type: "error",
         onConfirm: () => {
           // Remover a proposta expirada
-          const updated = savedProposals.filter(p => p.id !== proposal.id);
+          const updated = savedProposals.filter((p) => p.id !== proposal.id);
           setSavedProposals(updated);
-          localStorage.setItem('savedProposals', JSON.stringify(updated));
-          setModal(m => ({ ...m, open: false }));
+          localStorage.setItem("savedProposals", JSON.stringify(updated));
+          setModal((m) => ({ ...m, open: false }));
         },
       });
       return;
     }
-    
+
     setOptions(proposal.options);
     setServices(proposal.services);
   };
@@ -773,18 +862,18 @@ export default function App() {
   const deleteProposal = (id) => {
     setModal({
       open: true,
-      title: 'Excluir Proposta',
-      message: 'Tem certeza que deseja excluir esta proposta?',
-      confirmText: 'Excluir',
-      cancelText: 'Cancelar',
-      type: 'warning',
+      title: "Excluir Proposta",
+      message: "Tem certeza que deseja excluir esta proposta?",
+      confirmText: "Excluir",
+      cancelText: "Cancelar",
+      type: "warning",
       onConfirm: () => {
-        const updated = savedProposals.filter(p => p.id !== id);
+        const updated = savedProposals.filter((p) => p.id !== id);
         setSavedProposals(updated);
-        localStorage.setItem('savedProposals', JSON.stringify(updated));
-        setModal(m => ({ ...m, open: false }));
+        localStorage.setItem("savedProposals", JSON.stringify(updated));
+        setModal((m) => ({ ...m, open: false }));
       },
-      onCancel: () => setModal(m => ({ ...m, open: false })),
+      onCancel: () => setModal((m) => ({ ...m, open: false })),
     });
   };
 
@@ -839,7 +928,9 @@ export default function App() {
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
           <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">1. Objeto da Proposta</h2>
-          <p style="margin: 8px 0;">É objeto do presente contrato o desenvolvimento de serviços advocatícios especializados por parte da Proponente, Cavalcante Reis Advogados, ao Aceitante, Município de ${options.municipio || "[Nome do Município]"}, a fim de prestação de serviços de assessoria técnica e jurídica nas áreas de Direito Público, Tributário, Econômico, Financeiro, Minerário e Previdenciário, atuando perante o Ministério da Fazenda e os seus órgãos administrativos, em especial para alcançar o incremento de receitas, ficando responsável pelo ajuizamento, acompanhamento e eventuais intervenções de terceiro em ações de interesse do Município.</p>
+          <p style="margin: 8px 0;">É objeto do presente contrato o desenvolvimento de serviços advocatícios especializados por parte da Proponente, Cavalcante Reis Advogados, ao Aceitante, Município de ${
+            options.municipio || "[Nome do Município]"
+          }, a fim de prestação de serviços de assessoria técnica e jurídica nas áreas de Direito Público, Tributário, Econômico, Financeiro, Minerário e Previdenciário, atuando perante o Ministério da Fazenda e os seus órgãos administrativos, em especial para alcançar o incremento de receitas, ficando responsável pelo ajuizamento, acompanhamento e eventuais intervenções de terceiro em ações de interesse do Município.</p>
           <p class="mb-4">A proposta inclui os seguintes objetos:</p>
           <table class="w-full border-collapse border mb-4" style="width:100%; border:1px solid #ddd; font-family: Garamond, serif; font-size: 13px;">
             <thead>
@@ -849,13 +940,25 @@ export default function App() {
               </tr>
             </thead>
             <tbody>
-              ${Object.entries(allServices).map(([key, label]) => services[key] ? `<tr class="border-b"><td class="p-2 align-top">${label}</td><td class="p-2 align-top">Cabível</td></tr>` : "").join("")}
+              ${Object.entries(allServices)
+                .map(([key, label]) =>
+                  services[key]
+                    ? `<tr class="border-b"><td class="p-2 align-top">${label}</td><td class="p-2 align-top">Cabível</td></tr>`
+                    : ""
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
           <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">2. Análise da Questão</h2>
-          ${Object.entries(allServices).map(([key, label]) => services[key] ? `<h3 class="font-bold text-lg mt-6 mb-2" style="font-family: Garamond, serif; font-size: 14px;">${serviceTitles[key]}</h3><div class="space-y-4">${serviceTextDatabase[key]}</div>` : "").join("")}
+          ${Object.entries(allServices)
+            .map(([key, label]) =>
+              services[key]
+                ? `<h3 class="font-bold text-lg mt-6 mb-2" style="font-family: Garamond, serif; font-size: 14px;">${serviceTitles[key]}</h3><div class="space-y-4">${serviceTextDatabase[key]}</div>`
+                : ""
+            )
+            .join("")}
         </div>
         <div class="proposal-section" style="margin: 24px 0;">
           <h2 class="text-2xl font-bold" style="border-bottom:1px solid #ddd;padding-bottom:8px; font-family: Garamond, serif; font-size: 15px;">3. Dos Honorários, das Condições de Pagamento e Despesas</h2>
@@ -888,10 +991,103 @@ export default function App() {
 
   // Função para gerar docx igual à prévia
   const generateDocx = async () => {
-    // Usa o HTML da prévia para montar o texto
+    // Importa logo
+    const logoUrl = "/logo-cavalcante-reis.png";
+    const logoResponse = await fetch(logoUrl);
+    const logoBlob = await logoResponse.blob();
+    const logoArrayBuffer = await logoBlob.arrayBuffer();
+    const {
+      Document,
+      Packer,
+      Paragraph,
+      TextRun,
+      Table,
+      TableRow,
+      TableCell,
+      AlignmentType,
+      ImageRun,
+    } = require("docx");
+
+    // Cabeçalho: logo centralizado
+    const logoImageRun = new ImageRun({
+      data: logoArrayBuffer,
+      transformation: { width: 300, height: 100 },
+    });
+    const logoParagraph = new Paragraph({
+      children: [logoImageRun],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 200 },
+    });
+
+    // Bloco à direita: Proponente/Destinatário/Data
+    const { municipio, data } = options;
+    const infoParagraph = new Paragraph({
+      children: [
+        new TextRun({ text: "Proponente: Cavalcante Reis Advogados\n", bold: true, font: "Garamond", size: 26 }),
+        new TextRun({
+          text: `Destinatário: Prefeitura Municipal de ${municipio || "[Nome do Município]"}\n`,
+          bold: true,
+          font: "Garamond",
+          size: 26,
+        }),
+        new TextRun({ text: `${data || "[Data da Proposta]"}`, italics: true, font: "Garamond", size: 26 }),
+      ],
+      alignment: AlignmentType.RIGHT,
+      spacing: { after: 200 },
+    });
+
+    // Conteúdo principal: divide por parágrafos para manter espaçamento
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = proposalHtmlForCopy;
-    const cleanText = tempDiv.innerText;
+    const blocks = tempDiv.querySelectorAll("h1, h2, h3, p, ul, ol, table");
+    const children = [];
+    blocks.forEach((block) => {
+      if (block.tagName === "P") {
+        children.push(
+          new Paragraph({
+            text: block.innerText,
+            style: "Normal",
+            spacing: { after: 200 },
+          })
+        );
+      } else if (block.tagName === "H1" || block.tagName === "H2" || block.tagName === "H3") {
+        children.push(
+          new Paragraph({
+            text: block.innerText,
+            style: "Normal",
+            bold: true,
+            spacing: { before: 200, after: 100 },
+          })
+        );
+      } else if (block.tagName === "UL" || block.tagName === "OL") {
+        block.querySelectorAll("li").forEach((li) => {
+          children.push(
+            new Paragraph({
+              text: "• " + li.innerText,
+              style: "Normal",
+              spacing: { after: 100 },
+            })
+          );
+        });
+      } else if (block.tagName === "TABLE") {
+        // Tabela: converte para Table do docx
+        const rows = Array.from(block.querySelectorAll("tr")).map(
+          (tr) =>
+            new TableRow({
+              children: Array.from(tr.querySelectorAll("th,td")).map(
+                (cell) =>
+                  new TableCell({
+                    children: [new Paragraph({ text: cell.innerText, style: "Normal" })],
+                    margins: { top: 100, bottom: 100, left: 100, right: 100 },
+                  })
+              ),
+            })
+        );
+        children.push(new Table({ rows, width: { size: 100, type: "pct" } }));
+      }
+    });
+
+    // Cria documento com fonte Garamond 13
     const doc = new Document({
       styles: {
         paragraphStyles: [
@@ -900,8 +1096,8 @@ export default function App() {
             name: "Normal",
             run: {
               font: "Garamond",
-              size: 26, // 13pt (docx usa metade do valor em twips)
-              color: "222222"
+              size: 26,
+              color: "222222",
             },
             paragraph: {
               spacing: { after: 120 },
@@ -910,10 +1106,21 @@ export default function App() {
         ],
       },
     });
-    doc.addSection({ children: [new Paragraph({ text: cleanText, style: "Normal" })] });
+
+    // Removido bloco duplicado de declaração de logoImage
+
+    // Adiciona tudo na ordem correta
+    doc.addSection({
+      children: [
+        logoParagraph,
+        infoTable,
+        new Paragraph({ text: "", spacing: { after: 100 } }),
+        new Paragraph({ text: cleanText, style: "Normal" }),
+      ],
+    });
     const packer = new Packer();
     const blob = await packer.toBlob(doc);
-    saveAs(blob, `Proposta - ${options.municipio || "Municipio"}.docx`);
+    saveAs(blob, `Proposta - ${municipio || "Municipio"}.docx`);
   };
 
   // Processar upload de .docx: substituir município, data e remover seções 2.2-2.8
@@ -923,11 +1130,11 @@ export default function App() {
     if (!validation.valid) {
       setModal({
         open: true,
-        title: 'Arquivo inválido',
+        title: "Arquivo inválido",
         message: validation.error,
-        confirmText: 'OK',
-        type: 'error',
-        onConfirm: () => setModal(m => ({ ...m, open: false })),
+        confirmText: "OK",
+        type: "error",
+        onConfirm: () => setModal((m) => ({ ...m, open: false })),
       });
       return;
     }
@@ -1013,7 +1220,6 @@ export default function App() {
         />
         <div className="content">
           <ProposalDocument theme={theme} options={options} services={services} />
-          <CopyButton theme={theme} textToCopy={proposalHtmlForCopy} />
         </div>
         <Modal {...modal} />
       </main>
