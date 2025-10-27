@@ -138,6 +138,8 @@ const ControlsSidebar = ({
   setOptions,
   services,
   setServices,
+  customCabimentos,
+  setCustomCabimentos,
   savedProposals,
   onLoadProposal,
   onDeleteProposal,
@@ -150,6 +152,14 @@ const ControlsSidebar = ({
 
   const handleServiceChange = (serviceName) => {
     setServices((prev) => ({ ...prev, [serviceName]: !prev[serviceName] }));
+  };
+
+  const handleCabimentoChange = (serviceName, value) => {
+    const sanitizedValue = value
+      .replace(/<script[^>]*>.*?<\/script>/gi, "") // Remove scripts
+      .replace(/<[^>]+>/g, "") // Remove tags HTML
+      .trim();
+    setCustomCabimentos((prev) => ({ ...prev, [serviceName]: sanitizedValue }));
   };
 
   const handleOptionChange = (e) => {
@@ -266,12 +276,35 @@ const ControlsSidebar = ({
       </div>
 
       <div className="services">
-        {Object.entries(allServices).map(([key, label]) => (
-          <label key={key} className="service-item">
-            <input type="checkbox" checked={!!services[key]} onChange={() => handleServiceChange(key)} />
-            <span>{label}</span>
-          </label>
-        ))}
+        {Object.entries(allServices).map(([key, label]) => {
+          const hasCabivel = customCabimentos.hasOwnProperty(key);
+          return (
+            <div key={key} style={{ marginBottom: "12px" }}>
+              <label className="service-item">
+                <input type="checkbox" checked={!!services[key]} onChange={() => handleServiceChange(key)} />
+                <span>{label}</span>
+              </label>
+              {hasCabivel && services[key] && (
+                <div style={{ marginLeft: "24px", marginTop: "4px" }}>
+                  <input
+                    type="text"
+                    value={customCabimentos[key] || ""}
+                    onChange={(e) => handleCabimentoChange(key, e.target.value)}
+                    placeholder="Cabimento/Perspectiva"
+                    style={{
+                      width: "100%",
+                      padding: "6px 8px",
+                      fontSize: "13px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      fontFamily: "inherit",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
 
         <div className="actions">
           <button
@@ -295,7 +328,7 @@ const ControlsSidebar = ({
 
       {/* Propostas Salvas */}
       <div className="saved-proposals">
-        <h3>Propostas Salvas</h3>
+        <h3 style={{ marginBottom: "30px", fontSize: "16px" }}>Propostas Salvas</h3>
         {savedProposals.length === 0 ? (
           <p style={{ color: themeColors.paragraph, fontSize: "14px", fontStyle: "italic" }}>
             Nenhuma proposta salva ainda.
@@ -311,51 +344,64 @@ const ControlsSidebar = ({
               const isExpiringSoon = daysRemaining && daysRemaining <= 3;
               const isExpired = daysRemaining && daysRemaining <= 0;
 
+              // Formatar data de expiração em dd/mm/aaaa
+              const expirationDate = proposal.expiresAt
+                ? new Date(proposal.expiresAt).toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                : null;
+
+              // Determinar a cor de fundo base
+              const baseColor = isExpired ? "#ffebee" : themeColors.docBg;
+
               return (
                 <div
                   key={proposal.id}
                   className="proposal-item"
+                  data-expired={isExpired}
                   style={{
-                    padding: "12px",
-                    marginBottom: "8px",
-                    border: `1px solid ${isExpiringSoon ? "#ff9800" : themeColors.sidebarBorder}`,
+                    padding: "16px",
                     borderRadius: "4px",
-                    backgroundColor: isExpired ? "#ffebee" : themeColors.docBg,
+                    marginBottom: "15px",
+                    border: `1px solid ${isExpiringSoon ? "#ff9800" : themeColors.sidebarBorder}`,
+                    backgroundColor: baseColor,
                     opacity: isExpired ? 0.7 : 1,
                   }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div style={{ flex: 1 }}>
-                      <strong style={{ display: "block", marginBottom: "4px" }}>{proposal.municipio}</strong>
-                      <small style={{ color: themeColors.paragraph, fontSize: "12px", display: "block" }}>
+                      <strong style={{ display: "block", marginBottom: "4px", fontSize: "14px" }}>
+                        {proposal.municipio}
+                      </strong>
+                      <small style={{ color: themeColors.paragraph, fontSize: "11px", display: "block" }}>
                         {proposal.data}
                       </small>
-                      {daysRemaining !== null && (
+                      {expirationDate && (
                         <small
                           style={{
-                            color: isExpired ? "#c62828" : isExpiringSoon ? "#f57c00" : "#666",
-                            fontSize: "11px",
+                            color: isExpired ? "#c62828" : isExpiringSoon ? "#f57c00" : "#555",
+                            fontSize: "12px",
                             display: "block",
                             marginTop: "4px",
-                            fontWeight: isExpiringSoon ? "bold" : "normal",
+                            fontWeight: isExpiringSoon ? "bold" : "600",
                           }}>
-                          {isExpired
-                            ? "⚠️ Expirada"
-                            : `⏰ Expira em ${daysRemaining} dia${daysRemaining !== 1 ? "s" : ""}`}
+                          {isExpired ? `⚠️ Expirada dia: ${expirationDate}` : `⏰ Expira dia: ${expirationDate}`}
                         </small>
                       )}
                     </div>
-                    <div style={{ display: "flex", gap: "8px" }}>
+                    <div style={{ display: "flex", gap: "6px" }}>
                       <button
                         onClick={() => onLoadProposal(proposal)}
                         className="btn-small"
-                        style={{ padding: "4px 8px", fontSize: "12px" }}
+                        style={{ padding: "4px 8px", fontSize: "11px" }}
                         disabled={isExpired}>
                         Carregar
                       </button>
                       <button
                         onClick={() => onDeleteProposal(proposal.id)}
                         className="btn-small"
-                        style={{ padding: "4px 8px", fontSize: "12px", backgroundColor: "#dc3545", color: "white" }}>
+                        style={{ padding: "4px 8px", fontSize: "11px", backgroundColor: "#dc3545", color: "white" }}>
                         Excluir
                       </button>
                     </div>
@@ -370,7 +416,7 @@ const ControlsSidebar = ({
   );
 };
 
-const ProposalDocument = ({ theme, options, services }) => {
+const ProposalDocument = ({ theme, options, services, customCabimentos }) => {
   const themeColors = colors[theme];
 
   // Helper para renderizar serviços como componentes React
@@ -400,58 +446,112 @@ const ProposalDocument = ({ theme, options, services }) => {
   // Helper para renderizar linhas da tabela
   const renderTableRow = (serviceKey, tese, cabimento) => {
     if (!services[serviceKey]) return null;
+
+    // Usar o valor customizado se existir, senão usar o valor padrão
+    const finalCabimento = customCabimentos && customCabimentos[serviceKey] ? customCabimentos[serviceKey] : cabimento;
+
     return (
       <tr key={serviceKey} style={{ height: 40, verticalAlign: "top", borderBottom: "4px solid black" }}>
         <td className="p-2 align-top" style={{ paddingTop: 12, paddingBottom: 12, color: "#000" }}>
           {tese}
         </td>
         <td className="p-2 align-top" style={{ paddingTop: 12, paddingBottom: 12, color: "#000" }}>
-          {cabimento}
+          {finalCabimento}
         </td>
       </tr>
     );
   };
 
   // Helper para renderizar uma "página"
-  const renderPage = (children) => (
+  const renderPage = (children, showLogo = true) => (
     <div style={{ pageBreakAfter: "always", paddingBottom: 40 }}>
-      <div style={{ textAlign: "center", marginBottom: 24 }}>
-        <img
-          src="/logo-cavalcante-reis.png"
-          alt="Logo Cavalcante Reis Advogados"
-          style={{ maxWidth: 300, maxHeight: 100, display: "block", margin: "0 auto" }}
-        />
-      </div>
+      {showLogo && (
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <img
+            src="/logo-cavalcante-reis.png"
+            alt="Logo Cavalcante Reis Advogados"
+            style={{ maxWidth: 300, maxHeight: 100, display: "block", margin: "0 auto" }}
+          />
+        </div>
+      )}
       {children}
     </div>
   );
 
   return (
     <div id="preview" className="preview" style={{ fontFamily: "Garamond, serif", fontSize: "13px", color: "#222" }}>
-      {/* Página 1: Sumário */}
+      {/* Página 1: Capa */}
       {renderPage(
         <>
-          <div style={{ borderTop: "2px solid #000", paddingTop: 40, marginTop: 60 }}>
-            <div style={{ textAlign: "right", marginBottom: 60 }}>
-              <p style={{ margin: "8px 0" }}>
-                <strong>Proponente:</strong>
-              </p>
-              <p style={{ margin: "8px 0" }}>Cavalcante Reis Advogados</p>
+          <div style={{ textAlign: "center", marginTop: 60, marginBottom: 200 }}>
+            <img
+              src="/logo-cavalcante-reis.png"
+              alt="Cavalcante Reis Advogados"
+              style={{ width: "250px", height: "auto" }}
+            />
+          </div>
 
-              <p style={{ margin: "20px 0 8px 0" }}>
-                <strong>Destinatário:</strong>
-              </p>
-              <p style={{ margin: "8px 0" }}>Prefeitura Municipal de {options.municipio || "[Nome do Município]"}</p>
-            </div>
+          <div style={{ marginTop: 40 }}>
+            <div
+              style={{
+                borderTop: "1px solid #000",
+                paddingTop: 25,
+                maxWidth: "55%",
+                marginLeft: "auto",
+                marginRight: 0,
+              }}>
+              <div style={{ textAlign: "right", marginBottom: 30 }}>
+                <p style={{ margin: "4px 0" }}>
+                  <strong>Proponente:</strong>
+                </p>
+                <p style={{ margin: "4px 0" }}>Cavalcante Reis Advogados</p>
 
-            <div style={{ borderTop: "2px solid #000", paddingTop: 20, textAlign: "right" }}>
-              <p style={{ fontSize: "16px", fontWeight: "bold" }}>{options.data || "2025"}</p>
+                <p style={{ margin: "16px 0 4px 0" }}>
+                  <strong>Destinatário:</strong>
+                </p>
+                <p style={{ margin: "4px 0" }}>Prefeitura Municipal de {options.municipio || "[Nome do Município]"}</p>
+              </div>
+
+              <div style={{ borderTop: "1px solid #000", paddingTop: 12, textAlign: "right" }}>
+                <p style={{ fontSize: "16px", fontWeight: "bold" }}>{options.data || "2025"}</p>
+              </div>
             </div>
+          </div>
+        </>,
+        false // Não mostrar logo na capa pois já tem um logo grande
+      )}
+
+      {/* Página 2: Sumário */}
+      {renderPage(
+        <>
+          <div style={{ textAlign: "right", marginBottom: 40 }}>
+            <p style={{ fontSize: "14px" }}>2 -</p>
+          </div>
+          <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: 30 }}>Sumário</h2>
+          <div style={{ paddingLeft: 40, lineHeight: 2 }}>
+            <p style={{ margin: "12px 0" }}>
+              <strong>1.</strong> Objeto da Proposta
+            </p>
+            <p style={{ margin: "12px 0" }}>
+              <strong>2.</strong> Análise da Questão
+            </p>
+            <p style={{ margin: "12px 0" }}>
+              <strong>3.</strong> Dos Honorários, das Condições de Pagamento e Despesas
+            </p>
+            <p style={{ margin: "12px 0" }}>
+              <strong>4.</strong> Prazo e Cronograma de Execução dos Serviços
+            </p>
+            <p style={{ margin: "12px 0" }}>
+              <strong>5.</strong> Experiência em atuação em favor de Municípios e da Equipe Responsável
+            </p>
+            <p style={{ margin: "12px 0" }}>
+              <strong>6.</strong> Disposições Finais
+            </p>
           </div>
         </>
       )}
 
-      {/* Página 2: Objeto da Proposta */}
+      {/* Página 3: Objeto da Proposta */}
       {renderPage(
         <>
           <h2 className="text-2xl font-bold" style={{ borderBottom: "1px solid #ddd", paddingBottom: 8 }}>
@@ -647,6 +747,22 @@ function App() {
       return acc;
     }, {})
   );
+  const [customCabimentos, setCustomCabimentos] = useState({
+    pasep: "Cabível",
+    rpps: "Cabível",
+    impostoRenda: "Cabível",
+    cfem: "Cabível",
+    cfurh: "Cabível",
+    tabelaSUS: "Cabível",
+    fundef: "Cabível",
+    fundeb: "Cabível",
+    energiaEletrica: "Cabível",
+    royaltiesOleoGas: "Cabível",
+    repassesFPM: "Cabível",
+    revisaoParcelamento: "Cabível",
+    issqn: "Cabível",
+    servicosTecnicos: "Cabível",
+  });
   const [savedProposals, setSavedProposals] = useState([]);
   const [modal, setModal] = useState({
     open: false,
@@ -660,9 +776,589 @@ function App() {
   });
 
   // Funções auxiliares
-  const generateDocx = () => {
-    // Implementação do generateDocx
-    console.log("Generate DOCX");
+  const generateDocx = async () => {
+    console.log("Gerando DOCX...");
+
+    // Validar campos obrigatórios
+    if (!options.municipio || !options.data) {
+      setModal({
+        open: true,
+        title: "Campos Obrigatórios",
+        message: "Por favor, preencha o Município Destinatário e a Data da Proposta antes de baixar o documento.",
+        confirmText: "OK",
+        cancelText: "",
+        type: "warning",
+        onConfirm: () =>
+          setModal({
+            open: false,
+            title: "",
+            message: "",
+            confirmText: "OK",
+            cancelText: "",
+            type: "info",
+            onConfirm: () => {},
+            onCancel: () => {},
+          }),
+        onCancel: () => {},
+      });
+      return;
+    }
+
+    try {
+      // Carregar a imagem do logo
+      const logoResponse = await fetch("/logo-cavalcante-reis.png");
+      const logoBlob = await logoResponse.blob();
+      const logoArrayBuffer = await logoBlob.arrayBuffer();
+      const logoBuffer = new Uint8Array(logoArrayBuffer);
+
+      // Função auxiliar para criar linha de tabela
+      const createTableRow = (teseText, cabimentoText) => {
+        return new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: teseText,
+                      font: "Garamond",
+                      size: 26,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: cabimentoText,
+                      font: "Garamond",
+                      size: 26,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        });
+      };
+
+      // Criar linhas da tabela dinamicamente baseado nos serviços selecionados
+      const tableRows = [
+        // Header
+        new TableRow({
+          children: [
+            new TableCell({
+              shading: { fill: "F7F7F7" },
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: "TESE",
+                      bold: true,
+                      font: "Garamond",
+                      size: 26,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+            new TableCell({
+              shading: { fill: "F7F7F7" },
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: "CABIMENTO / PERSPECTIVA",
+                      bold: true,
+                      font: "Garamond",
+                      size: 26,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        }),
+      ];
+
+      // Adicionar linhas de serviços selecionados
+      if (services.folhaPagamento) {
+        tableRows.push(
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: "Folha de pagamento, recuperação de verbas indenizatórias e contribuições previdenciárias (INSS)",
+                        font: "Garamond",
+                        size: 26,
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: "A perspectiva de incremento/recuperação é de aproximadamente o valor referente a até duas folhas de pagamento mensais.",
+                        font: "Garamond",
+                        size: 26,
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          })
+        );
+      }
+
+      if (services.pasep) {
+        tableRows.push(createTableRow("Recuperação/ compensação PASEP", customCabimentos.pasep));
+      }
+
+      if (services.rpps) {
+        tableRows.push(createTableRow("RPPS Regime Próprio de Previdência Social", customCabimentos.rpps));
+      }
+
+      if (services.impostoRenda) {
+        tableRows.push(createTableRow("Recuperação/Compensação de Imposto de Renda", customCabimentos.impostoRenda));
+      }
+
+      if (services.cfem) {
+        tableRows.push(
+          createTableRow("Compensação financeira pela exploração de recursos minerais – CFEM", customCabimentos.cfem)
+        );
+      }
+
+      if (services.cfurh) {
+        tableRows.push(
+          createTableRow("Compensação Financeira pela Utilização dos Recursos Hídricos – CFURH", customCabimentos.cfurh)
+        );
+      }
+
+      if (services.tabelaSUS) {
+        tableRows.push(createTableRow("Tabela SUS", customCabimentos.tabelaSUS));
+      }
+
+      if (services.fundef) {
+        tableRows.push(
+          createTableRow("FUNDEF - Atuação em feito para agilizar a tramitação.", customCabimentos.fundef)
+        );
+      }
+
+      if (services.fundeb) {
+        tableRows.push(
+          createTableRow("Recuperação dos valores repassados à menor a título de FUNDEB.", customCabimentos.fundeb)
+        );
+      }
+
+      if (services.energiaEletrica) {
+        tableRows.push(
+          createTableRow("Auditoria e Consultoria do pagamento de Energia Elétrica", customCabimentos.energiaEletrica)
+        );
+      }
+
+      if (services.royaltiesOleoGas) {
+        tableRows.push(
+          createTableRow(
+            "Royalties pela exploração de óleo bruto, xisto betuminoso e gás natural.",
+            customCabimentos.royaltiesOleoGas
+          )
+        );
+      }
+
+      if (services.repassesFPM) {
+        tableRows.push(
+          createTableRow(
+            "Repasses dos recursos de FPM com base na real e efetiva arrecadação do IPI e IR.",
+            customCabimentos.repassesFPM
+          )
+        );
+      }
+
+      if (services.revisaoParcelamento) {
+        tableRows.push(
+          createTableRow("Revisão dos parcelamentos previdenciários", customCabimentos.revisaoParcelamento)
+        );
+      }
+
+      if (services.issqn) {
+        tableRows.push(createTableRow("Recuperação de Créditos de ISSQN", customCabimentos.issqn));
+      }
+
+      if (services.servicosTecnicos) {
+        tableRows.push(
+          createTableRow(
+            "Serviços técnicos especializados de assessoria e consultoria jurídica (DF)",
+            customCabimentos.servicosTecnicos
+          )
+        );
+      }
+
+      const doc = new Document({
+        sections: [
+          // Página 1: Capa
+          {
+            properties: {
+              page: {
+                margin: {
+                  top: 1440,
+                  right: 1440,
+                  bottom: 1440,
+                  left: 1440,
+                },
+              },
+            },
+            children: [
+              // Logo da capa
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 800, before: 200 },
+                children: [
+                  new ImageRun({
+                    data: logoBuffer,
+                    transformation: {
+                      width: 200,
+                      height: 60,
+                    },
+                  }),
+                ],
+              }),
+              // Linha horizontal superior
+              new Paragraph({
+                border: {
+                  top: {
+                    color: "000000",
+                    space: 1,
+                    style: "single",
+                    size: 6,
+                  },
+                },
+                spacing: { after: 400 },
+              }),
+              // Proponente
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                spacing: { after: 100 },
+                children: [
+                  new TextRun({
+                    text: "Proponente:",
+                    bold: true,
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                spacing: { after: 200 },
+                children: [
+                  new TextRun({
+                    text: "Cavalcante Reis Advogados",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              // Destinatário
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                spacing: { after: 100 },
+                children: [
+                  new TextRun({
+                    text: "Destinatário:",
+                    bold: true,
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                spacing: { after: 400 },
+                children: [
+                  new TextRun({
+                    text: `Prefeitura Municipal de ${options.municipio || "[Nome do Município]"}`,
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              // Linha horizontal do meio
+              new Paragraph({
+                border: {
+                  top: {
+                    color: "000000",
+                    space: 1,
+                    style: "single",
+                    size: 6,
+                  },
+                },
+                spacing: { after: 200 },
+              }),
+              // Ano
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                children: [
+                  new TextRun({
+                    text: options.data || "2025",
+                    bold: true,
+                    font: "Garamond",
+                    size: 28,
+                  }),
+                ],
+              }),
+            ],
+          },
+          // Página 2: Sumário
+          {
+            properties: {
+              page: {
+                margin: {
+                  top: 1440,
+                  right: 1440,
+                  bottom: 1440,
+                  left: 1440,
+                },
+              },
+            },
+            children: [
+              // Logo do cabeçalho
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 100 },
+                children: [
+                  new ImageRun({
+                    data: logoBuffer,
+                    transformation: {
+                      width: 150,
+                      height: 45,
+                    },
+                  }),
+                ],
+              }),
+              // Número da página
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                spacing: { after: 400 },
+                children: [
+                  new TextRun({
+                    text: "2 -",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              // Título Sumário
+              new Paragraph({
+                spacing: { after: 400 },
+                children: [
+                  new TextRun({
+                    text: "Sumário",
+                    bold: true,
+                    font: "Garamond",
+                    size: 32,
+                  }),
+                ],
+              }),
+              // Itens do sumário
+              new Paragraph({
+                spacing: { after: 200 },
+                indent: { left: 720 },
+                children: [
+                  new TextRun({
+                    text: "1. Objeto da Proposta",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                spacing: { after: 200 },
+                indent: { left: 720 },
+                children: [
+                  new TextRun({
+                    text: "2. Análise da Questão",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                spacing: { after: 200 },
+                indent: { left: 720 },
+                children: [
+                  new TextRun({
+                    text: "3. Dos Honorários, das Condições de Pagamento e Despesas",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                spacing: { after: 200 },
+                indent: { left: 720 },
+                children: [
+                  new TextRun({
+                    text: "4. Prazo e Cronograma de Execução dos Serviços",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                spacing: { after: 200 },
+                indent: { left: 720 },
+                children: [
+                  new TextRun({
+                    text: "5. Experiência em atuação em favor de Municípios e da Equipe Responsável",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                spacing: { after: 200 },
+                indent: { left: 720 },
+                children: [
+                  new TextRun({
+                    text: "6. Disposições Finais",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+            ],
+          },
+          // Página 3: Objeto da Proposta
+          {
+            properties: {
+              page: {
+                margin: {
+                  top: 1440,
+                  right: 1440,
+                  bottom: 1440,
+                  left: 1440,
+                },
+              },
+            },
+            children: [
+              // Logo do cabeçalho
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 100 },
+                children: [
+                  new ImageRun({
+                    data: logoBuffer,
+                    transformation: {
+                      width: 150,
+                      height: 45,
+                    },
+                  }),
+                ],
+              }),
+              // Título
+              new Paragraph({
+                spacing: { after: 300 },
+                border: {
+                  bottom: {
+                    color: "DDDDDD",
+                    space: 1,
+                    style: "single",
+                    size: 6,
+                  },
+                },
+                children: [
+                  new TextRun({
+                    text: "1. Objeto da Proposta",
+                    bold: true,
+                    font: "Garamond",
+                    size: 28,
+                  }),
+                ],
+              }),
+              // Texto introdutório
+              new Paragraph({
+                spacing: { after: 200 },
+                children: [
+                  new TextRun({
+                    text: `É objeto do presente contrato o desenvolvimento de serviços advocatícios especializados por parte da Proponente, Cavalcante Reis Advogados, ao Aceitante, Município de ${
+                      options.municipio || "[Nome do Município]"
+                    }, a fim de prestação de serviços de assessoria técnica e jurídica nas áreas de Direito Público, Tributário, Econômico, Financeiro, Minerário e Previdenciário, atuando perante o Ministério da Fazenda e os seus órgãos administrativos, em especial para alcançar o incremento de receitas, ficando responsável pelo ajuizamento, acompanhamento e eventuais intervenções de terceiro em ações de interesse do Município.`,
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                spacing: { after: 300 },
+                children: [
+                  new TextRun({
+                    text: "A proposta inclui os seguintes objetos:",
+                    font: "Garamond",
+                    size: 24,
+                  }),
+                ],
+              }),
+              // Tabela de serviços
+              new Table({
+                width: {
+                  size: 100,
+                  type: "pct",
+                },
+                borders: {
+                  top: { style: "single", size: 24, color: "000000" },
+                  bottom: { style: "single", size: 24, color: "000000" },
+                  left: { style: "single", size: 6, color: "000000" },
+                  right: { style: "single", size: 6, color: "000000" },
+                  insideHorizontal: { style: "single", size: 24, color: "000000" },
+                  insideVertical: { style: "single", size: 12, color: "000000" },
+                },
+                rows: tableRows,
+              }),
+            ],
+          },
+        ],
+      });
+
+      console.log("Documento criado, gerando blob...");
+
+      // Gerar e baixar o arquivo
+      const blob = await Packer.toBlob(doc);
+
+      console.log("Blob gerado, iniciando download...");
+
+      saveAs(blob, `Proposta-${options.municipio || "Municipio"}-${Date.now()}.docx`);
+
+      console.log("Download iniciado!");
+
+      setModal({
+        open: true,
+        title: "Download Concluído",
+        message: "O documento .docx foi gerado com sucesso!",
+        confirmText: "OK",
+        type: "success",
+        onConfirm: () => setModal((m) => ({ ...m, open: false })),
+      });
+    } catch (error) {
+      console.error("Erro ao gerar DOCX:", error);
+      setModal({
+        open: true,
+        title: "Erro ao Gerar Documento",
+        message: `Ocorreu um erro ao gerar o documento: ${error.message}`,
+        confirmText: "OK",
+        type: "error",
+        onConfirm: () => setModal((m) => ({ ...m, open: false })),
+      });
+    }
   };
 
   const saveProposal = () => {
@@ -671,7 +1367,8 @@ function App() {
       municipio: options.municipio,
       data: options.data,
       services,
-      expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 dias
+      customCabimentos,
+      expiresAt: Date.now() + 15 * 24 * 60 * 60 * 1000, // 15 dias
     };
 
     const updated = [...savedProposals, newProposal];
@@ -683,20 +1380,67 @@ function App() {
       title: "Proposta Salva",
       message: "Proposta salva com sucesso!",
       confirmText: "OK",
+      cancelText: "",
       type: "success",
-      onConfirm: () => setModal((m) => ({ ...m, open: false })),
+      onConfirm: () =>
+        setModal({
+          open: false,
+          title: "",
+          message: "",
+          confirmText: "OK",
+          cancelText: "",
+          type: "info",
+          onConfirm: () => {},
+          onCancel: () => {},
+        }),
+      onCancel: () => {},
     });
   };
 
   const loadProposal = (proposal) => {
     setOptions({ municipio: proposal.municipio, destinatario: "", data: proposal.data });
     setServices(proposal.services);
+    // Restaurar customCabimentos se existir, senão usar valores padrão
+    if (proposal.customCabimentos) {
+      setCustomCabimentos(proposal.customCabimentos);
+    }
   };
 
   const deleteProposal = (id) => {
-    const updated = savedProposals.filter((p) => p.id !== id);
-    setSavedProposals(updated);
-    localStorage.setItem("savedPropostas", JSON.stringify(updated));
+    setModal({
+      open: true,
+      title: "Confirmar Exclusão",
+      message: "Tem certeza que deseja excluir esta proposta salva? Esta ação não pode ser desfeita.",
+      confirmText: "Sim, Excluir",
+      cancelText: "Cancelar",
+      type: "warning",
+      onConfirm: () => {
+        const updated = savedProposals.filter((p) => p.id !== id);
+        setSavedProposals(updated);
+        localStorage.setItem("savedPropostas", JSON.stringify(updated));
+        setModal({
+          open: false,
+          title: "",
+          message: "",
+          confirmText: "OK",
+          cancelText: "",
+          type: "info",
+          onConfirm: () => {},
+          onCancel: () => {},
+        });
+      },
+      onCancel: () =>
+        setModal({
+          open: false,
+          title: "",
+          message: "",
+          confirmText: "OK",
+          cancelText: "",
+          type: "info",
+          onConfirm: () => {},
+          onCancel: () => {},
+        }),
+    });
   };
 
   // Funções de limpeza de propostas expiradas
@@ -743,9 +1487,44 @@ function App() {
             return acc;
           }, {})
         );
-        setModal({ ...modal, open: false });
+        setCustomCabimentos({
+          pasep: "Cabível",
+          rpps: "Cabível",
+          impostoRenda: "Cabível",
+          cfem: "Cabível",
+          cfurh: "Cabível",
+          tabelaSUS: "Cabível",
+          fundef: "Cabível",
+          fundeb: "Cabível",
+          energiaEletrica: "Cabível",
+          royaltiesOleoGas: "Cabível",
+          repassesFPM: "Cabível",
+          revisaoParcelamento: "Cabível",
+          issqn: "Cabível",
+          servicosTecnicos: "Cabível",
+        });
+        setModal({
+          open: false,
+          title: "",
+          message: "",
+          confirmText: "OK",
+          cancelText: "",
+          type: "info",
+          onConfirm: () => {},
+          onCancel: () => {},
+        });
       },
-      onCancel: () => setModal({ ...modal, open: false }),
+      onCancel: () =>
+        setModal({
+          open: false,
+          title: "",
+          message: "",
+          confirmText: "OK",
+          cancelText: "",
+          type: "info",
+          onConfirm: () => {},
+          onCancel: () => {},
+        }),
     });
   };
 
@@ -870,6 +1649,8 @@ function App() {
           setOptions={setOptions}
           services={services}
           setServices={setServices}
+          customCabimentos={customCabimentos}
+          setCustomCabimentos={setCustomCabimentos}
           savedProposals={savedProposals || []}
           onLoadProposal={loadProposal}
           onDeleteProposal={deleteProposal}
@@ -879,7 +1660,7 @@ function App() {
           onDownloadDocx={generateDocx}
         />
         <div className="content">
-          <ProposalDocument theme={theme} options={options} services={services} />
+          <ProposalDocument theme={theme} options={options} services={services} customCabimentos={customCabimentos} />
         </div>
         <Modal {...modal} />
       </main>

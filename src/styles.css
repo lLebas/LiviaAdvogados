@@ -1,8 +1,11 @@
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.25);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.25);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -12,7 +15,7 @@
   background: var(--doc-bg, #fff);
   color: var(--doc-text, #222);
   border-radius: 12px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.18);
   padding: 32px 24px 20px 24px;
   min-width: 320px;
   max-width: 90vw;
@@ -46,13 +49,26 @@
   background: var(--button, #ff8e3c);
   color: var(--button-text, #fff);
 }
+.modal-danger {
+  background: #dc3545;
+  color: #fff;
+}
+.modal-danger:hover {
+  background: #c82333;
+}
 .modal-cancel {
   background: var(--surface, #eee);
   color: var(--headline, #222);
 }
 @keyframes modalIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 * {
   box-sizing: border-box;
@@ -130,7 +146,7 @@ html,
 }
 .sidebar {
   width: 360px;
-  padding: 20px;
+  padding: 20px 24px;
   border-right: 1px solid var(--sidebar-border);
   background: var(--sidebar-bg);
 }
@@ -169,7 +185,7 @@ html,
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
 }
 .service-card .service-meta {
   flex: 1;
@@ -186,16 +202,16 @@ html,
 }
 
 .sidebar-highlight {
-  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4));
   border-radius: 12px;
   padding: 14px;
-  box-shadow: 0 8px 30px rgba(2,6,23,0.06);
+  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.06);
 }
 
 .header-prominent {
   background: var(--surface);
   border-bottom: 2px solid var(--sidebar-border);
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
 }
 
 .preview-floating {
@@ -203,14 +219,14 @@ html,
   padding: 36px;
   background: var(--doc-bg);
   border-radius: 12px;
-  box-shadow: 0 12px 34px rgba(2,6,23,0.08);
+  box-shadow: 0 12px 34px rgba(2, 6, 23, 0.08);
 }
 
 .section-editable {
-  background: rgba(0,0,0,0.02);
+  background: rgba(0, 0, 0, 0.02);
   padding: 12px;
   border-radius: 8px;
-  border: 1px dashed rgba(0,0,0,0.06);
+  border: 1px dashed rgba(0, 0, 0, 0.06);
   margin-bottom: 10px;
 }
 .service-item {
@@ -309,12 +325,16 @@ html,
 }
 
 .proposal-item {
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
+  position: relative;
 }
 
 .proposal-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #e8e8e8 !important;
+}
+
+.proposal-item[data-expired="true"]:hover {
+  background-color: #ffcdd2 !important;
 }
 
 .btn-small {
