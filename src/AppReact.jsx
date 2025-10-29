@@ -21,24 +21,6 @@ const colors = {
     tableBorder: "#a0a0a0",
     tableHeaderBg: "#f0f0f0",
   },
-  dark: {
-    background: "#001858",
-    headline: "#fef6e4",
-    paragraph: "#fef6e4",
-    button: "#f582ae",
-    buttonText: "#001858",
-    stroke: "#fef6e4",
-    main: "#f3d2c1",
-    highlight: "#001858",
-    secondary: "#8bd3dd",
-    tertiary: "#f582ae",
-    docBg: "#1e293b",
-    docText: "#fef6e4",
-    sidebarBg: "#0f172a",
-    sidebarBorder: "#1e293b",
-    tableBorder: "#505050",
-    tableHeaderBg: "#2c3e5a",
-  },
 };
 
 // --- Objeto com todos os serviços e seus nomes ---
